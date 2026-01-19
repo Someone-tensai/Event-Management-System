@@ -5,8 +5,10 @@ const express = require("express");
 const app = express();
 app.use(express.json());
 const events_router = require("./routes/events");
+const bookings_router = require("./routes/bookings");
 
 app.use("/api/events", events_router);
+app.use("/api/bookings", bookings_router);
 
 const PORT = 3000;
 app.listen(PORT, (error)=>{
