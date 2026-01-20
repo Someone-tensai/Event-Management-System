@@ -2,31 +2,34 @@ const pool = require("./pool.js");
 async function query_all_events(sort_by='newest', event_date='', due_date_before = '',category='') {
 
     let query = `
-        SELECT * FROM Events WHERE 1=1
+        SELECT Events.*, Clubs.club_name,  TO_CHAR(Events.date_time AT TIME ZONE 'UTC', 'YYYY-MM-DD') AS event_date FROM Events 
+        JOIN Clubs ON
+        Clubs.club_id = Events.club_id
+        WHERE 1=1
         `;
     let params = [];
     let i = 0;
     if(category != '') 
     {
-        query += ` AND category = $${i+1}`;
+        query += ` AND Events.category = $${i+1}`;
         params[i++] = category;
     }
 
     if(event_date != '')
     {
-        query += ` AND date_time::date = $${i+1}`;
+        query += ` AND Events.date_time::date = $${i+1}`;
         params[i++] = event_date;
     }
     if(due_date_before != '')
     {
-        query += ` AND due_date <= $${i+1}`;
+        query += ` AND Events.due_date <= $${i+1}`;
         params[i++] = due_date_before;
     }
     if(sort_by=='newest') 
     {
-        query+=' ORDER BY date_time DESC';
+        query+=' ORDER BY Events.date_time DESC';
     }
-    else query += ' ORDER BY date_time ASC';
+    else query += ' ORDER BY Events.date_time ASC';
     const { rows } = await pool.query(query, params);
     return rows;
 }
