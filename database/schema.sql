@@ -25,7 +25,7 @@ CREATE TABLE UserClub(
 );
 
 CREATE TABLE Events (
-    event_id SERIAL PRIMARY KEY,
+    SERIAL PRIMARY KEY,
     club_id int NOT NULL,
     title text NOT NULL,
     description text,
@@ -56,3 +56,11 @@ CREATE TABLE Payments(
     payment_time TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY(booking_id) REFERENCES Bookings(booking_id)
 );
+
+ALTER TABLE Events  
+ADD COLUMN category text
+CHECK(category IN ('Academic', 'Cultural', 'Sports','Club'));
+
+ALTER TABLE Events
+ADD COLUMN due_date date NOT NULL 
+DEFAULT (CURRENT_DATE + INTERVAL '5 days');
