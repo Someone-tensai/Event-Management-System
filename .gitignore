@@ -1,6 +1,7 @@
 vscode/
 *.pdf
 *.env
+*.md
 node_modules/
 # Logs
 logs
