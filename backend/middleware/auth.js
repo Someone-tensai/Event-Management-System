@@ -1,5 +1,5 @@
 const{verifyToken}=require('../utils/jwt');
-
+const app_error = require("../errors/app_error")
 const pool =require('../db/pool');
 
 //middleware to authenticate user to verify token and attach to rquest
@@ -10,14 +10,14 @@ const authenticate=async(req,res,next)=>{
         const authHeader=req.headers.authorization;
 
         if (!authHeader || !authHeader.startsWith('Bearer')){
-            return res.status(401).json({
-                success:false,
-                error: {
-                    code: 'No_token_provided',
-                    message:'Access Denied. No token provided.'
-                }
-            });
-        }
+            return next(
+                new app_error(
+                    'Access Denied. No Token Provided',
+                    401,
+                    'NO_TOKEN_PROVIDED'
+                )
+            ) 
+        };
 
         const token=authHeader.split(' ')[1];
         //verify token
@@ -29,14 +29,15 @@ const authenticate=async(req,res,next)=>{
         )
         
         if (result.rows.length==0){
-            return res.status(401).json({
-                success:false,
-                error:{
-                    code:'User not found',
-                    message:'User no longer exists.'
-                }
 
-            });
+            return next(
+                new app_error(
+                    'User Not Found',
+                    401,
+                    'USER_NOT_FOUND'
+                )
+            );
+
         }
 
         //attach user to request
@@ -45,23 +46,21 @@ const authenticate=async(req,res,next)=>{
         
     } catch (error){
         if(error.name==='JsonWebTokenError'){
-            return res.status(401).json({
-                success:false,
-                error:{
-                    code:'INVALID_TOKEN',
-                    message:'Invalid token '
-                }
-            });
+            return next(
+                new app_error(
+                'Invalid Token ',
+                401,
+                'INVALID_TOKEN'
+            ));
         }
         if(error.name==='TokenExpiredError'){
-            return res.status(401).json({
-                success:false,
-                error:{
-                    code:'TOKEN_EXPIRED',
-                    message:'Token has expired.'
-                }
-
-            });
+            return next(
+                new app_error(
+                    'Token has Expired',
+                    401,
+                    'TOKEN_EXPIRED'
+                )
+            )
         }
         console.error('Auth middleware error:',error);
         return res.status(500).json({
@@ -77,15 +76,15 @@ const authenticate=async(req,res,next)=>{
 
 const requireAdmin=(req,res,next)=>{
     if(req.user.role !=='admin'){
-        return res.status(403).json({
-            success:false,
-            error:{
-                code:'FORBIDDEN',
-                message:'Admin access required.'
-            }
-        });
+
+        return next(
+            new app_error(
+                'Admin Access Required',
+                403,
+                'FORBIDDEN'
+            )
+        )
     }
-    next();
 };
 
 
@@ -95,7 +94,7 @@ const optionalAuth =async(req,res,next)=>{
         const authHeader=req.headers.authorization;
 
         if(authHeader &&authHeader.startsWith('Bearer')){
-            const token=authHeader.split('')[1];
+            const token=authHeader.split(' ')[1];
             const decoded=verifyToken(token);
 
             const result=await pool.query(
