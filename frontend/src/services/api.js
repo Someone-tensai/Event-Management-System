@@ -1,27 +1,25 @@
-async function get_all_events() {
-    return await fetch("http://localhost:3000/api/events");
-}
+import axios from "axios";
+const api = axios.create({
+  baseURL: "http://localhost:3000/api",
+  withCredentials: true,
+  headers: {
+    "Content-Type": "application/json"
+  }
+});
 
-async function register_user(form_data){
-    const data =  await fetch("http://localhost:3000/api/users/register", {
-        method:"POST",
-        headers:{"Content-type":"application/json",},
-        body: JSON.stringify(form_data),
-    });
-    return data;
-}
+api.interceptors.request.use((config) => {
 
-async function login_user(form_data)
-{
-    const data = await fetch("http://localhost:3000/api/users/login", {
-        method: "POST",
-        headers: {"Content-type":"application/json"},
-        body: JSON.stringify(form_data)
-    })
-    return data;
-}
-export {
-    get_all_events,
-    register_user,
-    login_user,
-};
+    
+    return config;
+});
+
+api.interceptors.response.use(
+    (response) => response,
+    (error) => {
+        if(error.response.status === 401){
+
+        }
+        return Promise.reject(error);
+    }
+)
+export default api;

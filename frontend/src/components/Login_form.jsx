@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { login_user } from "../services/api";
+import api from "../services/api";
 import { useNavigate } from "react-router-dom";
 
 export default function Login_form() {
@@ -20,8 +20,7 @@ export default function Login_form() {
 
     let form = e.target;
     try {
-      const res = await login_user(form_data);
-      const data = await res.json();
+      const res = await api.post("/login", form_data);
       if (res.ok) {
         alert("Logged In Successfully");
         navigate("/events");
