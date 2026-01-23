@@ -1,11 +1,10 @@
 const jwt = require('jsonwebtoken');
 const config =require('../config/config');
 
-const generateToken = (user)=>{
+const generate_token = (user)=>{
     const payload ={
-        user_id: user.id,
+        user_id: user.user_id,
         email:user.email,
-        role: user.role
     };
 
     return jwt.sign(payload,config.jwt.secret,{
@@ -17,17 +16,17 @@ const generateToken = (user)=>{
  * verify jwt token 
  */
 
-const verifyToken=(token)=>{
+const verify_token=(token)=>{
     return jwt.verify(token,config.jwt.secret);
 };
 
 
-const decodeToken=(token)=>{
+const decode_token=(token)=>{
     return jwt.decode(token);
 };
 
 module.exports={
-    generateToken,
-    verifyToken,
-    decodeToken
+    generate_token,
+    verify_token,
+    decode_token
 };
