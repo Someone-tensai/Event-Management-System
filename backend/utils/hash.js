@@ -1,22 +1,22 @@
-const bcyrpt=require('bcryptjs');
+const bcrypt=require('bcryptjs');
 
 const SALT_ROUNDS=12;
 
-const hashPassword=async(password)=>{
+const hash_password=async(password)=>{
     return await bcrypt.hash(password,SALT_ROUNDS);
 
 };
 
-const comparePassword=async(password,hash)=>{
+const compare_password=async(password,hash)=>{
     return await bcrypt.compare(password,hash);
 };
 
-const generateResetToken=()=>{
+const generate_reset_token=()=>{
     return require('crypto').randomBytes(32).toString('hex');
 };
 
 module.exports={
-    hashPassword,
-    comparePassword,
-    generateResetToken
+    hash_password,
+    compare_password,
+    generate_reset_token
 };

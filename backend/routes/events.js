@@ -1,5 +1,5 @@
 // Routes for the Events
-const {Router} = require("express");
+const {Router} = require("Express");
 const {get_all_events, get_event_with_id, add_new_event, edit_event, delete_event} = require("../controllers/event_controller")
 
 const events_router = Router();

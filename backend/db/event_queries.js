@@ -30,28 +30,47 @@ async function query_all_events(sort_by='newest', event_date='', due_date_before
         query+=' ORDER BY Events.date_time DESC';
     }
     else query += ' ORDER BY Events.date_time ASC';
+    try{
     const { rows } = await pool.query(query, params);
     return rows;
 }
+    
+    catch(err) {
+        throw err;
+    }
+}
+   
 
 async function query_event_with_id(id)
 {
+    try{
     const {rows} = await pool.query(
         `
         SELECT * FROM Events WHERE event_id = $1
         `, [id]
     );
     return rows[0];
+    }
+    catch(err)
+    {
+        throw err;
+    }
+    
 }
 
 async function query_add_new_event(club_id, title, date_time, venue, total_seats, price, category='' , description='')
 {
+    try{
     const result = await pool.query(
         `
         INSERT INTO Events (club_id, title, description, date_time, venue, total_seats, price, category)
         VALUES ($1, $2, $3, $4, $5, $6, $7, $8)
         `, [club_id, title, description, date_time, venue, total_seats, price, category]
     )
+}
+    catch(err){
+        throw err;
+    }
 }
 
 async function query_edit_event(id)
@@ -61,11 +80,17 @@ async function query_edit_event(id)
 
 async function query_delete_event(id)
 {
+    try{
     const result = pool.query(
         `
         DELETE FROM Events WHERE event_id = $1
         `, [id]
     );
+}   
+    catch(err)
+    {
+        throw err;
+    }
 }
 module.exports = {
     query_all_events,
