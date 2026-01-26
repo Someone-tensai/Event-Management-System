@@ -1,6 +1,5 @@
 function Event_card({event})
 {
-  console.log(event);
   return (
     <>
     <div className='event_card border-b'>

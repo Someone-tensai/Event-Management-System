@@ -6,6 +6,7 @@ const app_error = require("./errors/app_error");
 const events_router = require("./routes/events");
 const bookings_router = require("./routes/bookings");
 const user_router = require("./routes/users");
+const club_router = require("./routes/club")
 const app = express();
 
 dotenv.config();
@@ -20,6 +21,7 @@ app.use(cookie_parser());
 app.use("/api/events", events_router);
 app.use("/api/bookings", bookings_router);
 app.use("/api/users", user_router);
+app.use("/api/clubs", club_router);
 const PORT = 3000;
 app.listen(PORT, (error)=>{
     if(error)  throw error;

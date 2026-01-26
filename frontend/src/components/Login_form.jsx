@@ -20,8 +20,8 @@ export default function Login_form() {
 
     let form = e.target;
     try {
-      const res = await api.post("/login", form_data);
-      if (res.ok) {
+      const res = await api.post("/users/login", form_data);
+      if (res.data.success) {
         alert("Logged In Successfully");
         navigate("/events");
       } else {
@@ -35,6 +35,7 @@ export default function Login_form() {
   }
 
   return (
+    <>
     <form
       onSubmit={handle_submit}
       className="flex flex-wrap gap-3 justify-center items-center"
@@ -86,11 +87,16 @@ export default function Login_form() {
       <div className="mt-6 flex items-center justify-end gap-x-6">
         <button
           type="submit"
-          className="rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white shadow-xs hover:bg-indigo-500 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+          className="rounded-md bg-blue-600 px-3 py-2 text-sm font-semibold text-white shadow-xs hover:bg-blue-500 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
         >
           Login
         </button>
       </div>
     </form>
+
+    <div className="mt-6 flex items-center justify-center gap-x-3">
+        Don't have an account?<a href="/register" className="rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white shadow-xs hover:bg-indigo-500 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">Register</a>
+      </div>
+    </>
   );
 }

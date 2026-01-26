@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { register_user } from "../services/api";
+import api from "../services/api";
 import { useNavigate } from "react-router-dom";
 
 export default function Register_form() {
@@ -26,11 +26,7 @@ export default function Register_form() {
     }
 
     try {
-      console.log("Before");
-      const resp = await register_user(form_data);
-      console.log("After");
-      console.log(resp);
-      const data = await resp.json();
+      const resp = await api.post("/users/register", form_data);
       if(resp.ok){
         alert("Registered Successfully");
         navigate("/login");
@@ -48,6 +44,7 @@ export default function Register_form() {
   }
 
   return (
+    <>
     <form onSubmit={handle_submit} className="flex flex-wrap gap-3 justify-center items-center">
       <div className="">
         <label
@@ -141,6 +138,12 @@ export default function Register_form() {
           Register
         </button>
       </div>
+   
     </form>
+
+       <div className="mt-6 flex items-center justify-center gap-x-3">
+        Already Registered? <a href="/login" className="rounded-md bg-blue-600 px-3 py-2 text-sm font-semibold text-white shadow-xs hover:bg-blue-500 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">login</a>
+      </div>
+    </>
   );
 }
