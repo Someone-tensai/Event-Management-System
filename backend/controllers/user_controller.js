@@ -24,7 +24,7 @@ async function register_user_data(req, res, next)
     }
     catch(err)
     {
-        throw err;
+        next(err);
     }
 }
 
@@ -73,7 +73,7 @@ async function login_user(req, res, next)
 function logout_user(req, res) {
     res.clearCookie('token', {
         httpOnly: true,
-        sameSite: true,
+        sameSite: 'lax',
         secure: false
     });
 

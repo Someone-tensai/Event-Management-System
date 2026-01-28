@@ -57,6 +57,18 @@ CREATE TABLE Payments(
     FOREIGN KEY(booking_id) REFERENCES Bookings(booking_id)
 );
 
+CREATE TABLE Invites(
+	user_id int,
+	club_id int,
+	PRIMARY KEY(user_id, club_id),
+	expiry_date date DEFAULT (CURRENT_DATE + INTERVAL '5 days'),
+	FOREIGN KEY(user_id) REFERENCES Users(user_id)
+	ON DELETE CASCADE,
+	
+	FOREIGN KEY(club_id) REFERENCES Clubs(club_id)
+	ON DELETE CASCADE
+);
+
 ALTER TABLE Events  
 ADD COLUMN category text
 CHECK(category IN ('Academic', 'Cultural', 'Sports','Club'));

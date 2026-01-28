@@ -1,4 +1,4 @@
-const {query_all_events, query_event_with_id, query_add_new_event, query_edit_event, query_delete_event} = require("../db/event_queries");
+const {query_all_events, query_event_with_id, query_create_new_event, query_edit_event, query_delete_event} = require("../db/event_queries");
 const app_error =  require("../errors/app_error");
 async function get_all_events(req,res,next)
 {
@@ -68,11 +68,11 @@ async function get_event_with_id(req, res, next)
    
 }
 
-async function add_new_event(req, res)
+async function create_new_event(req, res)
 {
     try{
     const {club_id, title, description, date_time, venue, total_seats, price, category, due_date} = req.body;
-    await query_add_new_event(club_id, title,date_time, venue, total_seats, price,due_date, category, description);
+    await query_create_new_event(club_id, title,date_time, venue, total_seats, price,due_date, category, description);
     res.json(("Response: Event Added"));
     }
     catch(err)
@@ -111,7 +111,7 @@ async function delete_event(req, res)
 module.exports = {
     get_all_events,
     get_event_with_id,
-    add_new_event, 
+    create_new_event, 
     edit_event,
     delete_event
 };

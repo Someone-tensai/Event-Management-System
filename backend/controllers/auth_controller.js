@@ -1,7 +1,7 @@
 const app_error = require("../errors/app_error")
 const config =require('../config/config');
 const {verify_token} = require("../utils/jwt")
-const {query_user_club, query_club_creator_check, query_number_of_people} = require("../db/club_queries");
+const {query_user_club, query_user_in_club, query_club_creator_check, query_number_of_people} = require("../db/club_queries");
 
 
 async function is_logged_in(req, res, next)
@@ -39,7 +39,7 @@ async function is_eligible_to_create(req, res, next)
     const user_id = req.user.user_id;
     // 1. In a Club
     const rows = await query_user_club(user_id);
-    if(rows.length === 0) {
+    if(!rows || rows.length === 0) {
         next(new app_error(
             'User Not in a Club',
             403,
@@ -61,11 +61,28 @@ async function is_eligible_to_create(req, res, next)
 
     // 3. Members Count
     const club_members = await query_number_of_people(club_id);
-    console.log(club_members);
+
     next();
 
 }
+
+async function is_from_club(req, res, next) {
+    
+    const user_id = req.user.user_id;
+    const {club_id} = req.body;
+    const user_in_club = await query_user_in_club(user_id, club_id);
+    if(user_in_club.length === 0) next(
+        new app_error(
+            'Must be Club Member to invite others',
+            403,
+            'NOT_CLUB_MEMBER'
+        )
+    );
+      
+    next();
+}
 module.exports = {
     is_logged_in,
-    is_eligible_to_create
+    is_eligible_to_create,
+    is_from_club
 };

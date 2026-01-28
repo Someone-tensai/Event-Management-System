@@ -59,7 +59,7 @@ async function query_event_with_id(id)
     
 }
 
-async function query_add_new_event(club_id, title, date_time, venue, total_seats, price, due_date, category='' , description='')
+async function query_create_new_event(club_id, title, date_time, venue, total_seats, price, due_date, category='' , description='')
 {
     try{
     const result = await pool.query(
@@ -108,7 +108,7 @@ async function query_delete_event(id)
 module.exports = {
     query_all_events,
     query_event_with_id,
-    query_add_new_event,
+    query_create_new_event,
     query_edit_event,
     query_delete_event
 };
