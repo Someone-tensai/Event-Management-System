@@ -1,4 +1,4 @@
-const {query_get_all_clubs ,query_user_in_club, query_user_was_invited,query_invite_only, query_club_invite, query_user_created_club, query_clubid_by_name, query_create_new_club, query_join_a_club} = require("../db/club_queries");
+const {query_get_all_clubs ,query_disable_invite, query_user_in_club, query_user_was_invited,query_invite_only, query_club_invite, query_user_created_club, query_clubid_by_name, query_create_new_club, query_join_a_club, query_leave_club} = require("../db/club_queries");
 const App_Error = require("../errors/app_error");
 async function get_all_clubs(req, res, next)
 {
@@ -62,8 +62,9 @@ async function join_a_club(req, res, next)
             400,
             'INVALID_CLUB_ID'
         ));
+        console.log(invite_only[0].invite_only);
         // Fix invite only 
-        if(invite_only.invite_only)
+        if(invite_only[0].invite_only)
         {
             const valid_invite = await query_user_was_invited(user_id, club_id);
             console.log(valid_invite);
@@ -72,6 +73,11 @@ async function join_a_club(req, res, next)
                 400,
                 'INVALID_USER_JOIN'
             ));
+            await query_join_a_club(user_id, club_id);
+            await query_disable_invite(user_id, club_id);
+            res.json(("Message: Club Joined Succesfully"));
+            return;
+
         }
         await query_join_a_club(user_id, club_id);
         res.json(("Message: Club Joined Succesfully"));
@@ -94,9 +100,23 @@ async function club_invite(req, res, next) {
         next(err);
     }
 }
+
+async function leave_club(req, res, next) {
+    try{
+        const user_id = req.user.user_id;
+        const {club_id} = req.body;
+        await query_leave_club(user_id, club_id);
+        res.json(("Message: Left Club"));
+    }
+    catch(err)
+    {
+        next(err);
+    }
+}  
 module.exports = {
     get_all_clubs,
     create_new_club,
     join_a_club,
-    club_invite
+    club_invite,
+    leave_club
 }

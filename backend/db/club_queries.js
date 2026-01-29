@@ -5,7 +5,7 @@ async function query_get_all_clubs()
     try{
     const {rows} = await pool.query(
         `
-        SELECT * FROM Clubs;
+        SELECT * FROM Invites;
         `
         // `
         // SELECT creator_id, ARRAY_AGG(club_name) AS Clubs FROM Clubs GROUP BY creator_id
@@ -137,7 +137,6 @@ async function query_invite_only(club_id)
             SELECT invite_only FROM Clubs WHERE club_id = $1
             `, [club_id]
         )
-        console.log(rows);
         return rows;
     }
     catch(err)
@@ -168,11 +167,37 @@ async function query_user_in_club(user_id, club_id) {
             SELECT * FROM UserClub WHERE user_id = $1 AND club_id = $2
             `, [user_id, club_id]
         );
-        console.log(rows);
         return rows;
     }       
     catch(err)
     {
+        throw err;
+    }
+}
+
+async function query_leave_club(user_id, club_id) {
+    try{
+        const {rows} = await pool.query(
+            `
+            DELETE FROM UserClub WHERE user_id = $1 AND club_id = $2
+            `, [user_id, club_id]
+        );
+    }
+    catch(err)
+    {
+        throw err;
+    }
+}
+
+async function query_disable_invite(user_id , club_id) {
+    try{
+        const {rows} = await pool.query(
+            `
+            DELETE FROM Invites WHERE user_id = $1 AND club_id = $2 
+            `, [user_id, club_id]
+        );
+    }
+    catch(err){
         throw err;
     }
 }
@@ -187,5 +212,7 @@ module.exports = {
     query_club_invite,
     query_invite_only,
     query_user_was_invited,
-    query_user_in_club
+    query_user_in_club,
+    query_leave_club,
+    query_disable_invite
 }

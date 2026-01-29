@@ -73,7 +73,7 @@ async function is_from_club(req, res, next) {
     const user_in_club = await query_user_in_club(user_id, club_id);
     if(user_in_club.length === 0) next(
         new app_error(
-            'Must be Club Member to invite others',
+            'Not a Club Member',
             403,
             'NOT_CLUB_MEMBER'
         )
