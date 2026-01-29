@@ -19,7 +19,10 @@ async function create_new_club(req, res, next)
 {
     try{
         const creator_id = req.user.user_id;
+        // Query for clubs created by the User
         const other_clubs = await query_user_created_club(creator_id);
+
+        // If Already Created Clubs, Not valid to create more.
         if(other_clubs.length > 0)
         {
             next(new App_Error(
@@ -29,10 +32,14 @@ async function create_new_club(req, res, next)
             ))
         }
         const {club_name, invite_only} = req.body;
+        // Parsing from string to boolean
         const invite = invite_only.toLowerCase() === 'true';
         await query_create_new_club(club_name, creator_id, invite);
+
+        // Updating the UserClub Table to make the creator also a part of the relation.
         const club = await query_clubid_by_name(club_name);
         await query_join_a_club(creator_id, club.club_id);
+
         res.json(("Message: Club Created"));
     }
     catch(err)
@@ -46,7 +53,7 @@ async function join_a_club(req, res, next)
     try {
         const user_id = req.user.user_id;
         const {club_id} = req.body;
-        //Query if Club is Anyone Can Join or Invite Only
+        //Query if User is already in Club
         const user_already = await query_user_in_club(user_id, club_id);
         if(user_already.length > 0) next(
             new App_Error(
@@ -55,6 +62,8 @@ async function join_a_club(req, res, next)
                 'USER_ALREADY_IN_CLUB'
             )
         );
+
+        // Query if Club is Invite Only or not
         const invite_only = await query_invite_only(club_id);
         
         if(invite_only.length === 0) next(new App_Error(
@@ -63,9 +72,10 @@ async function join_a_club(req, res, next)
             'INVALID_CLUB_ID'
         ));
         console.log(invite_only[0].invite_only);
-        // Fix invite only 
+
         if(invite_only[0].invite_only)
         {
+            // Check if User was Invited
             const valid_invite = await query_user_was_invited(user_id, club_id);
             console.log(valid_invite);
             if(valid_invite.length === 0) next(new App_Error(
@@ -74,6 +84,8 @@ async function join_a_club(req, res, next)
                 'INVALID_USER_JOIN'
             ));
             await query_join_a_club(user_id, club_id);
+
+            // Delete the invite after a user joins
             await query_disable_invite(user_id, club_id);
             res.json(("Message: Club Joined Succesfully"));
             return;
@@ -92,6 +104,7 @@ async function club_invite(req, res, next) {
     
     try {
         const {user_id, club_id} = req.body;
+        // Add a entry to the Invites Table for a invite
         await query_club_invite(user_id, club_id);
         res.json("Message: Invitation Successfully Sent");
     }

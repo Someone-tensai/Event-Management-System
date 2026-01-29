@@ -1,6 +1,8 @@
 const jwt = require('jsonwebtoken');
 const config =require('../config/config');
 
+
+// Generate jwt token
 const generate_token = (user)=>{
     const payload ={
         user_id: user.user_id,

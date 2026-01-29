@@ -4,6 +4,7 @@ const {verify_token} = require("../utils/jwt")
 const {query_user_club, query_user_in_club, query_club_creator_check, query_number_of_people} = require("../db/club_queries");
 
 
+// Checks if User is Logged in 
 async function is_logged_in(req, res, next)
 {
     const token = req.cookies.token;
@@ -33,7 +34,7 @@ async function is_logged_in(req, res, next)
         }
 }
 
-
+// Checks if User is Eligbile to Create an Event via
 async function is_eligible_to_create(req, res, next)
 {
     const user_id = req.user.user_id;
@@ -59,13 +60,14 @@ async function is_eligible_to_create(req, res, next)
         ));
     }
 
-    // 3. Members Count
+    // 3. Members Count (TODO)
     const club_members = await query_number_of_people(club_id);
 
     next();
 
 }
 
+// Checks if the user making the request for a club is in the club
 async function is_from_club(req, res, next) {
     
     const user_id = req.user.user_id;

@@ -5,7 +5,7 @@ async function query_get_all_clubs()
     try{
     const {rows} = await pool.query(
         `
-        SELECT * FROM Invites;
+        SELECT * FROM Clubs;
         `
         // `
         // SELECT creator_id, ARRAY_AGG(club_name) AS Clubs FROM Clubs GROUP BY creator_id
@@ -52,6 +52,7 @@ async function query_create_new_club(club_name, creator_id, invite_only) {
     }
 }
 
+// Query to check if a user has created a club already
 async function query_user_created_club(user_id) {
     try {
         const {rows} = await  pool.query(
