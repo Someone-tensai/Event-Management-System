@@ -74,10 +74,10 @@ const authenticate=async(req,res,next)=>{
     
 };
 
-const requireAdmin=(req,res,next)=>{
-    if(req.user.role !=='admin'){
+const require_admin=(req,res,next)=>{
+    if(req.user.user_id !== 7){
 
-        return next(
+        next(
             new app_error(
                 'Admin Access Required',
                 403,
@@ -85,6 +85,7 @@ const requireAdmin=(req,res,next)=>{
             )
         )
     }
+    next();
 };
 
 
@@ -114,6 +115,6 @@ const optionalAuth =async(req,res,next)=>{
 };
 module.exports={
     authenticate,
-    requireAdmin,
+    require_admin,
     optionalAuth
 };

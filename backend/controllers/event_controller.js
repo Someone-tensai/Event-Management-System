@@ -1,8 +1,7 @@
-const {query_all_events, query_event_with_id, query_add_new_event, query_edit_event, query_delete_event} = require("../db/event_queries");
+const {query_all_events, query_event_with_id, query_create_new_event, query_edit_event, query_delete_event} = require("../db/event_queries");
 const app_error =  require("../errors/app_error");
-async function get_all_events(req,res)
+async function get_all_events(req,res,next)
 {
-    
     try{
     const {sort_by, date,due_date, category} = req.query;
     if(sort_by && !['newest','oldest'].includes(sort_by))
@@ -34,7 +33,7 @@ async function get_all_events(req,res)
     
 }
 
-async function get_event_with_id(req, res)
+async function get_event_with_id(req, res, next)
 {
    
     try{
@@ -69,22 +68,38 @@ async function get_event_with_id(req, res)
    
 }
 
-async function add_new_event(req, res)
+async function create_new_event(req, res)
 {
     try{
-    const {club_id, title, description, date_time, venue, total_seats, price, category} = req.body;
-    await query_add_new_event(club_id, title,date_time, venue, total_seats, price, category, description);
+    const {club_id, title, description, date_time, venue, total_seats, price, category, due_date} = req.body;
+    await query_create_new_event(club_id, title,date_time, venue, total_seats, price,due_date, category, description);
     res.json(("Response: Event Added"));
     }
     catch(err)
     {
-        
+        if(err.code === '23503')
+        {
+        next(new app_error(
+                'Invalid Club ID',
+                400,
+                'INVALID_CLUB_ID'
+            )
+        )
+    }
+        throw err;
     }
 }
 
-async function edit_event()
+async function edit_event(req, res)
 {
-
+    try{
+        const {event_id, title, description, date_time, venue, total_seats, price, category, due_date} = req.body;
+        await query_edit_event(event_id, title, description, date_time, venue, total_seats, price, category, due_date);
+        res.json(("Response: Event Edited"));
+    }
+    catch(err) {
+        throw err;
+    }
 }
 
 async function delete_event(req, res)
@@ -96,7 +111,7 @@ async function delete_event(req, res)
 module.exports = {
     get_all_events,
     get_event_with_id,
-    add_new_event, 
+    create_new_event, 
     edit_event,
     delete_event
 };

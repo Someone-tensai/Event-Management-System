@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { useEffect } from 'react';
-import { get_all_events } from '../services/api';
+import api from '../services/api';
 import Event_list from '../components/Event_list';
 
 
@@ -13,9 +13,8 @@ function Events() {
     //Function to fetch all event data
     async function load_events(){
     try {
-    const res = await get_all_events();
-    const data = await res.json();
-    setEvents(data.events);
+    const res = await api.get("/events");
+    setEvents(res.data.events);
   }
   catch(err){
     console.error(err);

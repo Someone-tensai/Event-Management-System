@@ -14,10 +14,18 @@ async function get_booking_with_id(req,res)
 
 async function add_new_booking(req, res)
 {
-    const {user_id, event_id, tickets_booked} = req.body;
+    try{
+    const user_id = req.user.user_id;
+    const {event_id, tickets_booked} = req.body;
     let booking_array = [user_id, event_id, tickets_booked, 'Pending'];
     await query_add_new_booking(booking_array);
     res.json("Message: Booking Added");
+    }
+
+    catch(err)
+    {
+        throw err;
+    }
 
 }
 module.exports = {

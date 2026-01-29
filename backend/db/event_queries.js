@@ -1,6 +1,7 @@
 const pool = require("./pool.js");
 async function query_all_events(sort_by='newest', event_date='', due_date_before = '',category='') {
 
+    
     let query = `
         SELECT Events.*, Clubs.club_name,  TO_CHAR(Events.date_time AT TIME ZONE 'UTC', 'YYYY-MM-DD') AS event_date FROM Events 
         JOIN Clubs ON
@@ -58,14 +59,14 @@ async function query_event_with_id(id)
     
 }
 
-async function query_add_new_event(club_id, title, date_time, venue, total_seats, price, category='' , description='')
+async function query_create_new_event(club_id, title, date_time, venue, total_seats, price, due_date, category='' , description='')
 {
     try{
     const result = await pool.query(
         `
-        INSERT INTO Events (club_id, title, description, date_time, venue, total_seats, price, category)
-        VALUES ($1, $2, $3, $4, $5, $6, $7, $8)
-        `, [club_id, title, description, date_time, venue, total_seats, price, category]
+        INSERT INTO Events (club_id, title, description, date_time, venue, total_seats, price, category, due_date)
+        VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)
+        `, [club_id, title, description, date_time, venue, total_seats, price, category, due_date]
     )
 }
     catch(err){
@@ -73,9 +74,21 @@ async function query_add_new_event(club_id, title, date_time, venue, total_seats
     }
 }
 
-async function query_edit_event(id)
+async function query_edit_event(event_id, title, description, date_time, venue, total_seats, price, category, due_date)
 {
-
+    try {
+        const result = await pool.query(
+            `
+            UPDATE Events 
+            SET title = $1 , description = $2, date_time = $3, venue = $4 , total_seats = $5, price = $6 , category = $7 , due_date = $8
+            WHERE event_id = $9
+            `,
+            [title, description, date_time, venue, total_seats, price, category, due_date, event_id]
+        )
+    }
+    catch(err) {
+        throw err;
+    }
 }
 
 async function query_delete_event(id)
@@ -95,7 +108,7 @@ async function query_delete_event(id)
 module.exports = {
     query_all_events,
     query_event_with_id,
-    query_add_new_event,
+    query_create_new_event,
     query_edit_event,
     query_delete_event
 };
