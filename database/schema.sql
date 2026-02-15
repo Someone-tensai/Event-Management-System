@@ -43,7 +43,7 @@ CREATE TABLE Bookings(
     event_id int NOT NULL,
     tickets_booked int CHECK(tickets_booked > 0),
     booking_time TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    status text CHECK(status IN ('Pending', 'Confirmed')),
+    status text CHECK(status IN ('Pending', 'Verified')),
     FOREIGN KEY(user_id) REFERENCES Users(user_id),
     FOREIGN KEY(event_id) REFERENCES Events(event_id)
 );
