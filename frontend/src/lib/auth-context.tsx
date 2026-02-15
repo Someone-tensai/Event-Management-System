@@ -1,12 +1,22 @@
 import React, { createContext, useContext, useEffect, useState } from "react";
 import api from "./api";
+
+export interface Club {
+  club_id: string,
+  club_name: string,
+  creator_id: number,
+  invite_only: boolean,
+  members: number
+  category: string,
+  description: string
+}
 export interface User {
   id: string;
   name: string;
   email: string;
   profile_pic?: string;
-  clubs: string[];
-  adminClubs: string[];
+  clubs: Club[];
+  adminClubs: Club[];
 }
 
 interface AuthContextType {
@@ -14,6 +24,7 @@ interface AuthContextType {
   login: (email: string, password: string) => Promise<void>;
   logout: () => Promise<void>;
   register: (name: string, email: string, password: string) => Promise<void>;
+  refreshUser: () => Promise<void>;
   isClubMember: boolean;
   isClubAdmin: (clubId?: string) => boolean;
 }
@@ -22,6 +33,15 @@ const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [user, setUser] = useState<User | null>(null);
+
+  const refreshUser = async () => {
+  try {
+    const res = await api.get("/users/me");
+    setUser(res.data);
+  } catch {
+    setUser(null);
+  }
+};
 
   useEffect(() => {
     const fetchUser = async () => {
@@ -78,12 +98,12 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const isClubAdmin = (clubId?: string) => {
     if (!user) return false;
     if (!clubId) return user.adminClubs.length > 0;
-    return user.adminClubs.includes(clubId);
+    return user.adminClubs.some(c => c.club_id === clubId);
   };
 
   return (
     <AuthContext.Provider
-      value={{ user, login, logout, register, isClubMember, isClubAdmin }}
+      value={{ user, login, logout, register, isClubMember, isClubAdmin , refreshUser}}
     >
       {children}
     </AuthContext.Provider>

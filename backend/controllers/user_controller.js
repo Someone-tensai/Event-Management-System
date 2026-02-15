@@ -1,4 +1,5 @@
 const {find_by_id , query_get_users_admin_club, query_get_users_club,query_register_user, query_find_by_username, query_get_all_users} = require("../db/user_queries")
+const {query_number_of_people} = require("../db/club_queries");
 const {hash_password, compare_password} = require("../utils/hash")
 const {generate_token} = require("../utils/jwt");
 const app_error = require("../errors/app_error");

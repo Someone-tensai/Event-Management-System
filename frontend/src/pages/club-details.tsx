@@ -1,12 +1,22 @@
 import { useParams, Link } from 'react-router';
+import { useState, useEffect } from 'react';
 import { Users, Calendar, ChevronLeft } from 'lucide-react';
 import { mockClubs, mockEvents } from '../lib/mock-data';
 import { useAuth } from '../lib/auth-context';
+import api from '../lib/api';
+import { Club } from '../lib/auth-context';
 
 export function ClubDetailsPage() {
   const { id } = useParams();
   const { user } = useAuth();
-  const club = mockClubs.find(c => c.id === id);
+  const [club, setClub] = useState<Club>();
+  useEffect(() => {
+    async function get_club_detail() {
+      const res = await api.get(`/clubs/${id}`);
+      setClub(res.data);
+    }
+    get_club_detail();
+  }, []);
 
   if (!club) {
     return (
@@ -20,8 +30,8 @@ export function ClubDetailsPage() {
   }
 
   const clubEvents = mockEvents.filter(e => e.club.id === id);
-  const isMember = user?.clubs.includes(id || '');
-  const isAdmin = user?.adminClubs.includes(id || '');
+  const isMember = user?.clubs.some(c => c.club_id === id);
+  const isAdmin = user?.adminClubs.some(c => c.club_id === id);
 
   return (
     <div className="max-w-screen-2xl mx-auto px-6 py-8">
@@ -37,19 +47,19 @@ export function ClubDetailsPage() {
       <div className="relative h-64 bg-blue-600 dark:bg-blue-800 rounded-xl overflow-hidden mb-8">
         <img 
           src={club.coverImage} 
-          alt={club.name}
+          alt={club.club_name}
           className="w-full h-full object-cover opacity-50"
         />
         <img
           src={club.logo}
-          alt={club.name}
+          alt={club.club_name}
           className="absolute -bottom-12 left-8 size-32 rounded-full border-4 border-white dark:border-gray-950 shadow-lg"
         />
       </div>
 
       <div className="flex items-start justify-between mb-8 pl-48">
         <div>
-          <h1 className="text-4xl font-bold text-gray-900 dark:text-white mb-2">{club.name}</h1>
+          <h1 className="text-4xl font-bold text-gray-900 dark:text-white mb-2">{club.club_name}</h1>
           <div className="flex items-center gap-4 text-gray-600 dark:text-gray-400">
             <div className="flex items-center gap-1">
               <Users className="size-4" />
@@ -72,8 +82,16 @@ export function ClubDetailsPage() {
             Member
           </button>
         ) : (
-          <button className="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors">
-            Request to Join
+          <button
+            disabled={club.invite_only}
+            className={`flex-1 px-4 py-2 bg-blue-600 text-white rounded-lg text-sm font-medium
+             ${
+               club.invite_only
+                 ? "bg-gray-400 cursor-not-allowed text-white hover:bg-gray"
+                 : "bg-blue-600 hover:bg-blue-700 text-white"
+             }`}
+          >
+            {!club.invite_only ? <>Join Club</> : <>Invite Only</>}
           </button>
         )}
       </div>

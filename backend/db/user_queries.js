@@ -71,8 +71,8 @@ async function query_get_users_club(user_id)
     try{
         const {rows} = await pool.query(
             `
-            SELECT c.* FROM Clubs c JOIN
-            UserClub u ON u.club_id = c.club_id JOIN
+            SELECT c.* FROM Clubs c LEFT JOIN
+            UserClub u ON u.club_id = c.club_id LEFT JOIN
             Users us ON us.user_id = u.user_id
             WHERE u.user_id = $1
             `, [user_id]

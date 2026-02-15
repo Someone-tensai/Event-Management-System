@@ -10,7 +10,7 @@ export function MyClubsPage() {
 
   const myClubs = user.clubs;
   const adminClubs = user.adminClubs;
-
+  console.log(myClubs);
   return (
     <div className="space-y-6">
       {/* Admin Clubs */}
@@ -23,7 +23,7 @@ export function MyClubsPage() {
           
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             {adminClubs.map((club) => (
-              <div key={club.id} className="group border border-gray-200 dark:border-gray-800 rounded-lg overflow-hidden hover:shadow-lg transition-shadow">
+              <div key={club.club_id} className="group border border-gray-200 dark:border-gray-800 rounded-lg overflow-hidden hover:shadow-lg transition-shadow">
                 <div className="relative h-24 bg-blue-600 dark:bg-blue-800">
                   <img 
                     src={club.coverImage} 
@@ -32,7 +32,7 @@ export function MyClubsPage() {
                   />
                   <img
                     src={club.logo}
-                    alt={club.name}
+                    alt={club.club_name}
                     className="absolute -bottom-6 left-4 size-14 rounded-full border-4 border-white dark:border-gray-900"
                   />
                 </div>
@@ -44,13 +44,13 @@ export function MyClubsPage() {
                   </div>
                   <div className="flex gap-2">
                     <Link
-                      to={`/clubs/${club.id}`}
+                      to={`/clubs/${club.club_id}`}
                       className="flex-1 px-3 py-1.5 text-center text-sm border border-gray-300 dark:border-gray-700 text-gray-700 dark:text-gray-300 rounded hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors"
                     >
                       View Club
                     </Link>
                     <Link
-                      to={`/clubs/${club.id}/dashboard`}
+                      to={`/clubs/${club.club_id}/dashboard`}
                       className="flex-1 px-3 py-1.5 text-center text-sm bg-blue-600 text-white rounded hover:bg-blue-700 transition-colors"
                     >
                       Manage
@@ -85,16 +85,16 @@ export function MyClubsPage() {
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             {myClubs.map((club) => (
-              <div key={club.id} className="group border border-gray-200 dark:border-gray-800 rounded-lg overflow-hidden hover:shadow-lg transition-shadow">
+              <div key={club.club_id} className="group border border-gray-200 dark:border-gray-800 rounded-lg overflow-hidden hover:shadow-lg transition-shadow">
                 <div className="relative h-24 bg-blue-600 dark:bg-blue-800">
                   <img 
                     src={club.coverImage} 
-                    alt={club.name}
+                    alt={club.club_name}
                     className="w-full h-full object-cover opacity-50"
                   />
                   <img
                     src={club.logo}
-                    alt={club.name}
+                    alt={club.club_name}
                     className="absolute -bottom-6 left-4 size-14 rounded-full border-4 border-white dark:border-gray-900"
                   />
                   {user.adminClubs.includes(club.id) && (
@@ -104,13 +104,13 @@ export function MyClubsPage() {
                   )}
                 </div>
                 <div className="pt-10 pb-4 px-4">
-                  <h3 className="font-bold text-gray-900 dark:text-white mb-1">{club.name}</h3>
+                  <h3 className="font-bold text-gray-900 dark:text-white mb-1">{club.club_name}</h3>
                   <div className="flex items-center gap-1 text-sm text-gray-600 dark:text-gray-400 mb-3">
                     <Users className="size-4" />
                     <span>{club.members} members</span>
                   </div>
                   <Link
-                    to={`/clubs/${club.id}`}
+                    to={`/clubs/${club.club_id}`}
                     className="flex items-center justify-center gap-2 px-3 py-1.5 text-sm border border-gray-300 dark:border-gray-700 text-gray-700 dark:text-gray-300 rounded hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors"
                   >
                     View Club
