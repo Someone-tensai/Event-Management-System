@@ -12,7 +12,7 @@ const app = express();
 dotenv.config();
 
 app.use(cors({
-    origin: "http://localhost:5173",
+    origin: "http://localhost:3000",
     credentials: true
 }));
 app.use(express.json());
@@ -22,7 +22,7 @@ app.use("/api/events", events_router);
 app.use("/api/bookings", bookings_router);
 app.use("/api/users", user_router);
 app.use("/api/clubs", club_router);
-const PORT = 3000;
+const PORT = 5000;
 app.listen(PORT, (error)=>{
     if(error)  throw error;
     console.log(`First Express App - Listening on port ${PORT}`);

@@ -1,7 +1,8 @@
-const {query_register_user, query_find_by_username, query_get_all_users} = require("../db/user_queries")
+const {find_by_id , query_get_users_admin_club, query_get_users_club,query_register_user, query_find_by_username, query_get_all_users} = require("../db/user_queries")
 const {hash_password, compare_password} = require("../utils/hash")
 const {generate_token} = require("../utils/jwt");
-const app_error = require("../errors/app_error")
+const app_error = require("../errors/app_error");
+const { user } = require("pg/lib/defaults");
 
 // Register User
 async function register_user_data(req, res, next)
@@ -101,9 +102,33 @@ async function get_all_users(req, res)
         throw err;
     }
 }
+
+async function send_user_data(req, res, next)
+{
+    try{
+        const user_data = await find_by_id(req.user.user_id);
+        const club_data = await query_get_users_club(req.user.user_id);
+        const admin_club_data = await query_get_users_admin_club(req.user.user_id);
+        const user = {
+            id: user_data.user_id,
+            name: user_data.username,
+            email: user_data.email,
+            profile_pic: user_data.profile_pic,
+            clubs: club_data || [],
+            adminClubs: admin_club_data || []
+        }
+        res.json(user);
+
+    }
+    catch(err)
+    {
+        throw err;
+    }
+}
 module.exports = {
     register_user_data,
     login_user, 
     get_all_users,
-    logout_user
+    logout_user, 
+    send_user_data
 }

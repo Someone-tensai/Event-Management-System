@@ -1,5 +1,5 @@
 const pool = require("./pool.js");
-async function query_all_events(sort_by='newest', event_date='', due_date_before = '',category='') {
+async function query_all_events(sort_by='date',type='') {
 
     
     let query = `
@@ -10,29 +10,25 @@ async function query_all_events(sort_by='newest', event_date='', due_date_before
         `;
     let params = [];
     let i = 0;
-    if(category != '') 
+    if(type != '') 
     {
         query += ` AND Events.category = $${i+1}`;
-        params[i++] = category;
+        params[i++] = type;
     }
 
-    if(event_date != '')
+    if(sort_by=='date') 
     {
-        query += ` AND Events.date_time::date = $${i+1}`;
-        params[i++] = event_date;
+        query+=' ORDER BY Events.date_time';
     }
-    if(due_date_before != '')
+    else if(sort_by == 'price')
     {
-        query += ` AND Events.due_date <= $${i+1}`;
-        params[i++] = due_date_before;
+        query += ' ORDER BY price DESC ';
     }
-    if(sort_by=='newest') 
-    {
-        query+=' ORDER BY Events.date_time DESC';
-    }
-    else query += ' ORDER BY Events.date_time ASC';
     try{
+    console.log(query);
+    console.log(params);
     const { rows } = await pool.query(query, params);
+    console.log(rows);
     return rows;
 }
     

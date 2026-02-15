@@ -74,45 +74,7 @@ const authenticate=async(req,res,next)=>{
     
 };
 
-const require_admin=(req,res,next)=>{
-    if(req.user.user_id !== 7){
 
-        next(
-            new app_error(
-                'Admin Access Required',
-                403,
-                'FORBIDDEN'
-            )
-        )
-    }
-    next();
-};
-
-
-//optional auth
-const optionalAuth =async(req,res,next)=>{
-    try{
-        const authHeader=req.headers.authorization;
-
-        if(authHeader &&authHeader.startsWith('Bearer')){
-            const token=authHeader.split(' ')[1];
-            const decoded=verifyToken(token);
-
-            const result=await pool.query(
-                'SELECT user_id, username,email,role FROM Users WHERE user_id=$1',
-                [decoded.user_id]
-            );
-            if(result.rows.length>0){
-                req.user=result.rows[0];
-            }
-        }
-        next();
-
-    } catch (error) {
-        //continue without user if token invalid
-        next();
-    }
-};
 module.exports={
     authenticate,
     require_admin,
