@@ -3,8 +3,9 @@ const app_error =  require("../errors/app_error");
 async function get_all_events(req,res,next)
 {
     try{
-    const {sort_by, date,due_date, category} = req.query;
-    if(sort_by && !['newest','oldest'].includes(sort_by))
+    const {sort_by, type} = req.query;
+    console.log(type);
+    if(sort_by && !['date','price'].includes(sort_by))
     {
         next(new app_error(
             'Invalid sort_by Value',
@@ -12,9 +13,31 @@ async function get_all_events(req,res,next)
             'INVALID_QUERY_PARAM', 
             true
         ));
+        return;
     }
-    const events = await query_all_events(sort_by, date, due_date, category);
-    res.json({events});
+    const events = await query_all_events(sort_by, type);
+    const formatted = events.map(event => {
+    const dateObj = new Date(event.date_time);
+
+    return {
+      id: event.event_id,
+      title: event.title,
+      date: dateObj.toISOString().split("T")[0],
+      time: dateObj.toISOString().split("T")[1].slice(0,5),
+      type: event.category?.toLowerCase() || "physical",
+      priority: false, // or logic if you have one
+      price: event.price,
+      venue: event.venue,
+      image: "/default-event.jpg", // temporary until you store real images
+      totalSeats: event.total_seats,
+      availableSeats: event.total_seats, // replace with real calculation later
+      club: {
+        name: event.club_name,
+        logo: "/default-club.png"
+      }
+    };
+  });
+    res.json(formatted);
     }
     catch(err)
     {

@@ -1,7 +1,7 @@
 // Routes for the Bookings
 const {Router} = require("express");
 const {get_all_bookings, get_booking_with_id, add_new_booking} = require("../controllers/booking_controller")
-const {is_logged_in} = require("../controllers/auth_controller")
+const {is_logged_in} = require("../middleware/auth_controller")
 const bookings_router = Router();
 
 bookings_router.get("/",get_all_bookings);

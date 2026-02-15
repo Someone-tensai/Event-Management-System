@@ -1,3 +1,4 @@
+const user_router = require('../routes/users.js');
 const pool=require('./pool.js');
 
 
@@ -10,7 +11,7 @@ const findByEmail= async(email)=>{
     return result.rows[0] || null;
 };
 
-const findById =async(ser_id)=>{
+const find_by_id =async(user_id)=>{
     const result=await pool.query(
         'SELECT user_id,username,email,created_at FROM Users WHERE user_id=$1',
         [user_id]
@@ -64,8 +65,47 @@ async function query_get_all_users()
     }
 
 }
+
+async function query_get_users_club(user_id)
+{
+    try{
+        const {rows} = await pool.query(
+            `
+            SELECT c.* FROM Clubs c JOIN
+            UserClub u ON u.club_id = c.club_id JOIN
+            Users us ON us.user_id = u.user_id
+            WHERE u.user_id = $1
+            `, [user_id]
+        )
+        return rows;
+    }
+    catch(err)
+    {
+        throw err;
+    }
+}
+
+async function query_get_users_admin_club(user_id)
+{
+    try{
+        const {rows} = await pool.query(
+            `
+            SELECT * FROM Clubs
+            WHERE creator_id = $1
+            `, [user_id]
+        )
+        return rows;
+    }
+    catch(err)
+    {
+        throw err;
+    }
+}
 module.exports = {
     query_register_user,
     query_find_by_username,
     query_get_all_users,
+    find_by_id,
+    query_get_users_club,
+    query_get_users_admin_club
 };

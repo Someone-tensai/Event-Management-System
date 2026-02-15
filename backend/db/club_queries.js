@@ -215,5 +215,5 @@ module.exports = {
     query_user_was_invited,
     query_user_in_club,
     query_leave_club,
-    query_disable_invite
+    query_disable_invite,
 }

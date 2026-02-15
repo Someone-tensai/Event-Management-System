@@ -1,7 +1,7 @@
 // Routes for the Events
 const {Router} = require("express");
 const {get_all_events, get_event_with_id, create_new_event, edit_event, delete_event} = require("../controllers/event_controller")
-const {is_logged_in, is_eligible_to_create} = require("../controllers/auth_controller")
+const {is_logged_in, is_eligible_to_create} = require("../middleware/auth_controller")
 const events_router = Router();
 
 events_router.get("/" , get_all_events);

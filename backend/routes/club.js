@@ -1,6 +1,6 @@
 const {Router} = require("express");
 const {get_all_clubs ,club_invite, create_new_club, join_a_club, leave_club} = require("../controllers/club_controller")
-const {is_logged_in, is_from_club} = require("../controllers/auth_controller")
+const {is_logged_in, is_from_club} = require("../middleware/auth_controller")
 const club_router = Router();
 
 club_router.get("/", get_all_clubs);
