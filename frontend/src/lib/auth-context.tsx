@@ -10,6 +10,36 @@ export interface Club {
   category: string,
   description: string
 }
+export interface Event {
+  id: string;
+  title: string;
+  description: string;
+  date: string;
+  time: string;
+  venue: string;
+  type: 'physical' | 'online' | 'hybrid';
+  image: string;
+  price: number;
+  totalSeats: number;
+  availableSeats: number;
+  priority: boolean;
+  club: Club;
+  refundPolicy: string;
+  agenda?: string[];
+}
+
+export interface Booking {
+  id: string;
+  event_id: string;
+  event_name: string;
+  event_date: string;
+  venue: string;
+  tickets: number;
+  status: 'pending' | 'confirmed' | 'cancelled';
+  paymentProof?: string;
+  qrCode?: string;
+}
+
 export interface User {
   id: string;
   name: string;

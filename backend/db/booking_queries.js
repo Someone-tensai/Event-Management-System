@@ -1,3 +1,4 @@
+const { user } = require("pg/lib/defaults");
 const App_Error = require("../errors/app_error.js");
 const pool = require("./pool.js");
 
@@ -44,8 +45,28 @@ async function query_add_new_booking(booking_array)
         throw err;
     }
 }
+
+async function query_get_user_booking_for_event(user_id, event_id)
+{
+
+    try{
+        const {rows} = await pool.query(
+            `
+            SELECT * FROM Bookings WHERE user_id = $1 AND event_id = $2
+            `,
+            [user_id, event_id]
+        );
+
+        return rows[0];
+    }
+    catch(err)
+    {
+        throw err;
+    }
+}
 module.exports = {
     query_all_bookings,
     query_booking_with_id,
-    query_add_new_booking
+    query_add_new_booking,
+    query_get_user_booking_for_event
 };

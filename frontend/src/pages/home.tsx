@@ -3,7 +3,8 @@ import { Calendar, MapPin, Users, ArrowRight, TrendingUp } from 'lucide-react';
 import { ImageWithFallback } from '../components/figma/ImageWithFallback';
 import { useState, useEffect} from 'react';
 import api from '../lib/api';
-import { Event } from '../lib/mock-data';
+import { Event } from '../lib/auth-context';
+import { Club } from '../lib/auth-context';
 export function HomePage() {
     const [events, setEvents] = useState<Event[]>([]);
      useEffect(() => {
@@ -13,6 +14,15 @@ export function HomePage() {
     }
     get_events();
   }, []);
+
+  const [clubs, setClubs] = useState<Club[]>([]);
+    useEffect(() => {
+      async function get_clubs() {
+        const res = await api.get(`/clubs`);
+        setClubs(res.data);
+      }
+      get_clubs();
+    }, []);
 
   return (
     <div>
@@ -82,8 +92,8 @@ export function HomePage() {
           </div>
           
           <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-5 gap-6">
-            {mockClubs.map((club) => (
-              <ClubCard key={club.id} club={club} />
+            {clubs.map((club) => (
+              <ClubCard key={club.club_id} club={club} />
             ))}
           </div>
         </div>
@@ -156,24 +166,24 @@ function EventCard({ event }: { event: any }) {
 function ClubCard({ club }: { club: any }) {
   return (
     <Link
-      to={`/clubs/${club.id}`}
+      to={`/clubs/${club.club_id}`}
       className="group bg-white dark:bg-gray-900 rounded-lg border border-gray-200 dark:border-gray-800 overflow-hidden hover:shadow-lg transition-shadow"
     >
       <div className="relative h-24 bg-blue-600 dark:bg-blue-800">
         <img 
           src={club.coverImage} 
-          alt={club.name}
+          alt={club.club_name}
           className="w-full h-full object-cover opacity-50 group-hover:scale-105 transition-transform duration-300"
         />
         <img
           src={club.logo}
-          alt={club.name}
+          alt={club.club_name}
           className="absolute -bottom-6 left-1/2 -translate-x-1/2 size-16 rounded-full border-4 border-white dark:border-gray-900"
         />
       </div>
       <div className="pt-10 pb-4 px-4 text-center">
         <h3 className="font-bold text-gray-900 dark:text-white mb-2 group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors">
-          {club.name}
+          {club.club_name}
         </h3>
         <div className="flex items-center justify-center gap-1 text-sm text-gray-600 dark:text-gray-400">
           <Users className="size-4" />
@@ -185,56 +195,6 @@ function ClubCard({ club }: { club: any }) {
 }
 
 // Mock Data
-const mockEvents = [
-  {
-    id: '1',
-    title: 'Tech Fest 2026 - Innovation Summit',
-    date: 'Feb 5, 2026 • 10:00 AM',
-    venue: 'Main Auditorium',
-    image: 'https://images.unsplash.com/photo-1540575467063-178a50c2df87?w=800&h=450&fit=crop',
-    price: 0,
-    priority: true,
-    club: { name: 'Tech Club', logo: 'https://api.dicebear.com/7.x/shapes/svg?seed=tech' }
-  },
-  {
-    id: '2',
-    title: 'Annual Drama Night',
-    date: 'Feb 6, 2026 • 6:00 PM',
-    venue: 'Theater Hall',
-    image: 'https://images.unsplash.com/photo-1503095396549-807759245b35?w=800&h=450&fit=crop',
-    price: 5,
-    priority: false,
-    club: { name: 'Drama Club', logo: 'https://api.dicebear.com/7.x/shapes/svg?seed=drama' }
-  },
-  {
-    id: '3',
-    title: 'Basketball Championship Finals',
-    date: 'Feb 7, 2026 • 4:00 PM',
-    venue: 'Sports Complex',
-    image: 'https://images.unsplash.com/photo-1546519638-68e109498ffc?w=800&h=450&fit=crop',
-    price: 0,
-    priority: false,
-    club: { name: 'Sports Club', logo: 'https://api.dicebear.com/7.x/shapes/svg?seed=sports' }
-  },
-  {
-    id: '4',
-    title: 'Photography Workshop',
-    date: 'Feb 8, 2026 • 2:00 PM',
-    venue: 'Room 301',
-    image: 'https://images.unsplash.com/photo-1542038784456-1ea8e935640e?w=800&h=450&fit=crop',
-    price: 10,
-    priority: false,
-    club: { name: 'Photo Club', logo: 'https://api.dicebear.com/7.x/shapes/svg?seed=photo' }
-  }
-];
-
-const mockClubs = [
-  { id: 'tech-club', name: 'Tech Club', members: 245, logo: 'https://api.dicebear.com/7.x/shapes/svg?seed=tech', coverImage: 'https://images.unsplash.com/photo-1540575467063-178a50c2df87?w=800&h=450&fit=crop' },
-  { id: 'drama-club', name: 'Drama Club', members: 189, logo: 'https://api.dicebear.com/7.x/shapes/svg?seed=drama', coverImage: 'https://images.unsplash.com/photo-1503095396549-807759245b35?w=800&h=450&fit=crop' },
-  { id: 'sports-club', name: 'Sports Club', members: 312, logo: 'https://api.dicebear.com/7.x/shapes/svg?seed=sports', coverImage: 'https://images.unsplash.com/photo-1546519638-68e109498ffc?w=800&h=450&fit=crop' },
-  { id: 'photo-club', name: 'Photo Club', members: 156, logo: 'https://api.dicebear.com/7.x/shapes/svg?seed=photo', coverImage: 'https://images.unsplash.com/photo-1542038784456-1ea8e935640e?w=800&h=450&fit=crop' },
-  { id: 'music-club', name: 'Music Club', members: 201, logo: 'https://api.dicebear.com/7.x/shapes/svg?seed=music', coverImage: 'https://images.unsplash.com/photo-1540575467063-178a50c2df87?w=800&h=450&fit=crop' }
-];
 
 const categories = [
   { name: 'Workshops', count: 12, icon: <Calendar className="size-6 text-blue-600" />, color: 'bg-blue-100 dark:bg-blue-900' },

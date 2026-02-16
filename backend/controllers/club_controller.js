@@ -78,12 +78,11 @@ async function join_a_club(req, res, next) {
 
     if (invite_only.length === 0)
       next(new App_Error("Club not Found", 400, "INVALID_CLUB_ID"));
-    console.log(invite_only[0].invite_only);
 
     if (invite_only[0].invite_only) {
       // Check if User was Invited
       const valid_invite = await query_user_was_invited(user_id, club_id);
-      console.log(valid_invite);
+      
       if (valid_invite.length === 0)
         next(new App_Error("USER NOT INVITED", 400, "INVALID_USER_JOIN"));
       await query_join_a_club(user_id, club_id);

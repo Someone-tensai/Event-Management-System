@@ -120,8 +120,8 @@ export function ClubDetailsPage() {
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {clubEvents.map((event) => (
               <Link
-                key={event.id}
-                to={`/events/${event.id}`}
+                key={event.event_id}
+                to={`/events/${event.event_id}`}
                 className="group bg-white dark:bg-gray-900 rounded-lg border border-gray-200 dark:border-gray-800 overflow-hidden hover:shadow-lg transition-shadow"
               >
                 <div className="aspect-video bg-gray-200 dark:bg-gray-800 overflow-hidden">

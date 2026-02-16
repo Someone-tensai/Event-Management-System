@@ -1,15 +1,50 @@
-import { useState } from 'react';
+import { useState , useEffect} from 'react';
 import { useParams, Link } from 'react-router';
 import { Calendar, MapPin, Clock, Users, DollarSign, Info, ChevronLeft, AlertCircle } from 'lucide-react';
-import { mockEvents } from '../lib/mock-data';
 import { useAuth } from '../lib/auth-context';
+import api from '../lib/api';
+import { Event } from '../lib/auth-context';
 
 export function EventDetailsPage() {
   const { id } = useParams();
   const { user } = useAuth();
   const [showBookingModal, setShowBookingModal] = useState(false);
+  const [event, setEvent] = useState<Event>();
+  const [booked_tickets , setBookedTickets] = useState<number>(0);
+
+  const [hasBooked, setHasBooked] = useState(false);
+
+  useEffect(()=>{
+    async function check_if_booked()
+    {
+      const booking = await api.get(`/bookings/user?event_id=${id}`);
+      console.log(booking.data);
+      if(booking.data)
+      {
+        setHasBooked(true);
+        console.log(booking.data.tickets);
+        setBookedTickets(booking.data.tickets);
+      }
+    }
+    check_if_booked();
+  }, []);
+
+  useEffect(()=>{
+    async function get_event()
+  {
+    try{
+      const event = await api.get(`/events/${id}`);
+      setEvent(event.data);
+      console.log(hasBooked);
+    }
+    catch(err)
+    { 
+      throw err;
+    }
+  }
+  get_event();
+  }, [])
   
-  const event = mockEvents.find(e => e.id === id);
 
   if (!event) {
     return (
@@ -44,24 +79,19 @@ export function EventDetailsPage() {
             {/* Banner Image */}
             <div className="relative aspect-video bg-gray-200 dark:bg-gray-800 rounded-xl overflow-hidden mb-6">
               <img src={event.image} alt={event.title} className="w-full h-full object-cover" />
-              {event.priority && (
-                <div className="absolute top-4 right-4 px-3 py-1 bg-red-500 text-white text-sm font-bold rounded-lg">
-                  HIGH PRIORITY
-                </div>
-              )}
             </div>
 
             {/* Header */}
             <div className="mb-6">
               <h1 className="text-4xl font-bold text-gray-900 dark:text-white mb-4">{event.title}</h1>
               <Link 
-                to={`/clubs/${event.club.id}`}
+                to={`/clubs/${event.club.club_id}`}
                 className="inline-flex items-center gap-3 hover:opacity-80 transition-opacity"
               >
-                <img src={event.club.logo} alt={event.club.name} className="size-10 rounded-full" />
+                <img src={event.club.logo} alt={event.club.club_name} className="size-10 rounded-full" />
                 <div>
                   <div className="text-sm text-gray-500 dark:text-gray-400">Organized by</div>
-                  <div className="font-medium text-gray-900 dark:text-white">{event.club.name}</div>
+                  <div className="font-medium text-gray-900 dark:text-white">{event.club.club_name}</div>
                 </div>
               </Link>
             </div>
@@ -81,7 +111,7 @@ export function EventDetailsPage() {
                 <div className="space-y-3">
                   {event.agenda.map((item, index) => (
                     <div key={index} className="flex gap-3">
-                      <div className="w-2 h-2 bg-blue-600 rounded-full mt-2 flex-shrink-0"></div>
+                      <div className="w-2 h-2 bg-blue-600 rounded-full mt-2 shrink-0"></div>
                       <div className="text-gray-700 dark:text-gray-300">{item}</div>
                     </div>
                   ))}
@@ -93,7 +123,7 @@ export function EventDetailsPage() {
             <div className="bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 rounded-lg p-6 mb-6">
               <h2 className="text-xl font-bold text-gray-900 dark:text-white mb-4">Location</h2>
               <div className="flex items-start gap-3">
-                <MapPin className="size-5 text-gray-500 mt-1 flex-shrink-0" />
+                <MapPin className="size-5 text-gray-500 mt-1 shrink-0" />
                 <div>
                   <div className="font-medium text-gray-900 dark:text-white">{event.venue}</div>
                   <div className="text-sm text-gray-500 dark:text-gray-400">Campus Location</div>
@@ -104,7 +134,7 @@ export function EventDetailsPage() {
             {/* Refund Policy */}
             <div className="bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-lg p-6">
               <div className="flex gap-3">
-                <Info className="size-5 text-blue-600 dark:text-blue-400 flex-shrink-0 mt-0.5" />
+                <Info className="size-5 text-blue-600 dark:text-blue-400 shrink-0 mt-0.5" />
                 <div>
                   <h3 className="font-medium text-blue-900 dark:text-blue-100 mb-1">Refund Policy</h3>
                   <p className="text-sm text-blue-800 dark:text-blue-200">{event.refundPolicy}</p>
@@ -114,13 +144,13 @@ export function EventDetailsPage() {
           </div>
 
           {/* Right Column - Sticky Booking Widget */}
-          <div className="w-96 flex-shrink-0">
+          <div className="w-96 shrink-0">
             <div className="sticky top-24">
               <div className="bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 rounded-lg p-6 shadow-lg">
                 <div className="space-y-4 mb-6">
                   {/* Date & Time */}
                   <div className="flex items-start gap-3">
-                    <Calendar className="size-5 text-gray-500 mt-1 flex-shrink-0" />
+                    <Calendar className="size-5 text-gray-500 mt-1 shrink-0" />
                     <div>
                       <div className="text-sm text-gray-500 dark:text-gray-400">Date & Time</div>
                       <div className="font-medium text-gray-900 dark:text-white">{event.date}</div>
@@ -130,7 +160,7 @@ export function EventDetailsPage() {
 
                   {/* Type */}
                   <div className="flex items-start gap-3">
-                    <Clock className="size-5 text-gray-500 mt-1 flex-shrink-0" />
+                    <Clock className="size-5 text-gray-500 mt-1 shrink-0" />
                     <div>
                       <div className="text-sm text-gray-500 dark:text-gray-400">Event Type</div>
                       <div className="font-medium text-gray-900 dark:text-white capitalize">{event.type}</div>
@@ -139,7 +169,7 @@ export function EventDetailsPage() {
 
                   {/* Price */}
                   <div className="flex items-start gap-3">
-                    <DollarSign className="size-5 text-gray-500 mt-1 flex-shrink-0" />
+                    <DollarSign className="size-5 text-gray-500 mt-1 shrink-0" />
                     <div>
                       <div className="text-sm text-gray-500 dark:text-gray-400">Ticket Price</div>
                       <div className="text-2xl font-bold text-gray-900 dark:text-white">
@@ -171,7 +201,7 @@ export function EventDetailsPage() {
                 {/* Alert if almost full */}
                 {isAlmostFull && !isFull && (
                   <div className="flex items-start gap-2 p-3 bg-orange-50 dark:bg-orange-900/20 border border-orange-200 dark:border-orange-800 rounded-lg mb-4">
-                    <AlertCircle className="size-4 text-orange-600 dark:text-orange-400 flex-shrink-0 mt-0.5" />
+                    <AlertCircle className="size-4 text-orange-600 dark:text-orange-400 shrink-0 mt-0.5" />
                     <p className="text-sm text-orange-800 dark:text-orange-200">Hurry! Only a few seats remaining.</p>
                   </div>
                 )}
@@ -185,16 +215,26 @@ export function EventDetailsPage() {
                     Event Full
                   </button>
                 ) : user ? (
+                  !hasBooked?(
                   <button
                     onClick={() => setShowBookingModal(true)}
                     className="w-full py-3 bg-blue-600 text-white rounded-lg font-medium hover:bg-blue-700 transition-colors"
                   >
                     Book Ticket
                   </button>
-                ) : (
+                ):
+                (<>
+                <button
+                    disabled
+                    className="w-full py-3 bg-blue-600 text-white rounded-lg font-medium cursor-not-allowed"
+                  >
+                    {booked_tickets} Booked
+                  </button>
+                </>)) 
+                : (
                   <Link
                     to="/login"
-                    className="block w-full py-3 bg-blue-600 text-white text-center rounded-lg font-medium hover:bg-blue-700 transition-colors"
+                    className="block w-full py-3 bg-blue-600 text-white text-center rounded-lg font-medium  transition-colors"
                   >
                     Login to Book
                   </Link>
@@ -206,26 +246,51 @@ export function EventDetailsPage() {
       </div>
 
       {/* Booking Modal */}
-      {showBookingModal && (
+      {showBookingModal && !hasBooked && (
         <BookingModal 
           event={event} 
-          onClose={() => setShowBookingModal(false)} 
+          onClose={() => setShowBookingModal(false)}
+          onBook = {(quantity)=>{
+            setHasBooked(true);
+            setBookedTickets(quantity)
+          }} 
+          
         />
       )}
     </>
   );
 }
 
-function BookingModal({ event, onClose }: { event: any; onClose: () => void }) {
+function BookingModal({ event, onClose, onBook }: { event: any; onClose: () => void , onBook : (quantity:number)=> void}) {
   const [quantity, setQuantity] = useState(1);
   const [showSuccess, setShowSuccess] = useState(false);
-
-  const handleBook = () => {
+  const handleBook = async () => {
     // In real app, this would call an API
+
+    try{
+    const res = await api.post(`/bookings/add`, 
+      {
+        event_id : event.id,
+        tickets_booked: quantity
+      }
+    );
+    if(res.status != 200)
+    {
+      setShowSuccess(false);
+    }
+    else {
     setShowSuccess(true);
     setTimeout(() => {
+      onBook(quantity);
       onClose();
     }, 2000);
+    }
+  }
+   catch(err)
+   {
+    setShowSuccess(false);
+   }
+    
   };
 
   return (

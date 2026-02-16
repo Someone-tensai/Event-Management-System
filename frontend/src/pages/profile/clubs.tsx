@@ -10,7 +10,7 @@ export function MyClubsPage() {
 
   const myClubs = user.clubs;
   const adminClubs = user.adminClubs;
-  console.log(myClubs);
+
   return (
     <div className="space-y-6">
       {/* Admin Clubs */}
@@ -37,7 +37,7 @@ export function MyClubsPage() {
                   />
                 </div>
                 <div className="pt-10 pb-4 px-4">
-                  <h3 className="font-bold text-gray-900 dark:text-white mb-1">{club.name}</h3>
+                  <h3 className="font-bold text-gray-900 dark:text-white mb-1">{club.club_name}</h3>
                   <div className="flex items-center gap-1 text-sm text-gray-600 dark:text-gray-400 mb-3">
                     <Users className="size-4" />
                     <span>{club.members} members</span>
@@ -97,7 +97,7 @@ export function MyClubsPage() {
                     alt={club.club_name}
                     className="absolute -bottom-6 left-4 size-14 rounded-full border-4 border-white dark:border-gray-900"
                   />
-                  {user.adminClubs.includes(club.id) && (
+                  {user.adminClubs.includes(club.club_id) && (
                     <div className="absolute top-2 right-2 px-2 py-1 bg-blue-600 text-white text-xs font-bold rounded">
                       ADMIN
                     </div>

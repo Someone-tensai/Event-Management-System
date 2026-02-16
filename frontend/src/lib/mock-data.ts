@@ -1,26 +1,5 @@
-export interface Event {
-  id: string;
-  title: string;
-  description: string;
-  date: string;
-  time: string;
-  venue: string;
-  type: 'physical' | 'online' | 'hybrid';
-  image: string;
-  price: number;
-  totalSeats: number;
-  availableSeats: number;
-  priority: boolean;
-  club: {
-    id: string;
-    name: string;
-    logo: string;
-  };
-  refundPolicy: string;
-  agenda?: string[];
-}
 
-export interface Club {
+interface Club {
   id: string;
   name: string;
   description: string;

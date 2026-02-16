@@ -3,7 +3,7 @@ async function query_all_events(sort_by='date',type='') {
 
     
     let query = `
-        SELECT Events.*, Clubs.club_name,  TO_CHAR(Events.date_time AT TIME ZONE 'UTC', 'YYYY-MM-DD') AS event_date FROM Events 
+        SELECT Events.*, Clubs.*,  TO_CHAR(Events.date_time AT TIME ZONE 'UTC', 'YYYY-MM-DD') AS event_date FROM Events 
         JOIN Clubs ON
         Clubs.club_id = Events.club_id
         WHERE 1=1
@@ -25,10 +25,8 @@ async function query_all_events(sort_by='date',type='') {
         query += ' ORDER BY price DESC ';
     }
     try{
-    console.log(query);
-    console.log(params);
+   
     const { rows } = await pool.query(query, params);
-    console.log(rows);
     return rows;
 }
     
@@ -43,7 +41,10 @@ async function query_event_with_id(id)
     try{
     const {rows} = await pool.query(
         `
-        SELECT * FROM Events WHERE event_id = $1
+        SELECT Events.* , Clubs.* FROM Events
+        JOIN Clubs ON
+        Clubs.club_id = Events.club_id 
+        WHERE event_id = $1
         `, [id]
     );
     return rows[0];
