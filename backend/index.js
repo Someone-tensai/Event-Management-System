@@ -12,7 +12,7 @@ const app = express();
 dotenv.config();
 
 app.use(cors({
-    origin: "https://your-frontend.vercel.app",
+    origin: "event-management-system-28ig2tlqs-someone-tensais-projects.vercel.app",
     credentials: true
 }));
 app.use(express.json());
