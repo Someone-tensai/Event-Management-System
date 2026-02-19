@@ -43,14 +43,14 @@ async function query_clubid_by_name(club_name) {
   }
 }
 
-async function query_create_new_club(club_name, creator_id, invite_only) {
+async function query_create_new_club(club_name, creator_id,logo, cover_image, invite_only, description) {
   try {
     const result = await pool.query(
       `
-            INSERT INTO Clubs (club_name, creator_id, invite_only)
-            VALUES ($1, $2, $3)
+            INSERT INTO Clubs (club_name, creator_id, logo, cover_image, invite_only, description)
+            VALUES ($1, $2, $3, $4, $5, $6)
             `,
-      [club_name, creator_id, invite_only],
+      [club_name, creator_id, logo, cover_image, invite_only, description],
     );
     return result;
   } catch (err) {
@@ -194,6 +194,22 @@ async function query_disable_invite(user_id, club_id) {
     throw err;
   }
 }
+
+async function query_get_events_of_clubs(club_id) {
+  try{
+    const {rows} = await pool.query(
+      `
+      SELECT * FROM Events WHERE club_id = $1
+      `, 
+      [club_id]
+    );
+    return rows;
+  }
+  catch(err)
+  {
+    throw err;
+  }
+}
 module.exports = {
   query_get_all_clubs,
   query_create_new_club,
@@ -208,5 +224,6 @@ module.exports = {
   query_user_in_club,
   query_leave_club,
   query_disable_invite,
-  query_club_details
+  query_club_details,
+  query_get_events_of_clubs
 };

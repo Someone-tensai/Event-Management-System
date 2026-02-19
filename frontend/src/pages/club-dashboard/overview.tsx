@@ -1,94 +1,102 @@
-import { Users, Calendar, DollarSign, TrendingUp } from 'lucide-react';
-import { useParams } from 'react-router';
-import { mockClubs, mockEvents } from '../../lib/mock-data';
+import { useParams, Link } from "react-router";
+import { useState, useEffect } from "react";
+import api from "../../lib/api";
+import { Event } from "../../lib/auth-context";
 
 export function DashboardOverviewPage() {
   const { id } = useParams();
-  const club = mockClubs.find(c => c.id === id);
-  const clubEvents = mockEvents.filter(e => e.club.id === id);
+  console.log(id);
+  const [events, setEvents] = useState<Event[]>([]);
+  const [loading, setLoading] = useState(true);
 
-  if (!club) return null;
+  useEffect(() => {
+    async function getEvents() {
+      try {
+        console.log(id);
+        const res = await api.get(`/clubs/events/${id}`);
+        setEvents(res.data);
+      } catch (err) {
+        console.error(err);
+      } finally {
+        setLoading(false);
+      }
+    }
+    getEvents();
+  }, []);
 
-  const totalRevenue = clubEvents.reduce((sum, event) => {
-    const soldTickets = event.totalSeats - event.availableSeats;
-    return sum + (soldTickets * event.price);
+  async function handleDelete(eventId: any) {
+    try {
+      await api.delete(`/events/${eventId}`);
+      setEvents(prev => prev.filter(e => e.id !== eventId));
+    } catch (err) {
+      console.error(err);
+    }
+  }
+
+  const totalRevenue = events.reduce((sum, event) => {
+    const sold = event.totalSeats - event.availableSeats;
+    return sum + sold * event.price;
   }, 0);
 
-  const stats = [
-    {
-      label: 'Total Members',
-      value: club.members,
-      icon: Users,
-      color: 'text-blue-600 dark:text-blue-400',
-      bg: 'bg-blue-100 dark:bg-blue-900/30',
-      change: '+12 this month'
-    },
-    {
-      label: 'Events Hosted',
-      value: clubEvents.length,
-      icon: Calendar,
-      color: 'text-green-600 dark:text-green-400',
-      bg: 'bg-green-100 dark:bg-green-900/30',
-      change: '3 upcoming'
-    },
-    {
-      label: 'Total Revenue',
-      value: `$${totalRevenue}`,
-      icon: DollarSign,
-      color: 'text-blue-600 dark:text-blue-400',
-      bg: 'bg-blue-100 dark:bg-blue-900/30',
-      change: '+24% from last month'
-    },
-    {
-      label: 'Avg. Attendance',
-      value: '85%',
-      icon: TrendingUp,
-      color: 'text-orange-600 dark:text-orange-400',
-      bg: 'bg-orange-100 dark:bg-orange-900/30',
-      change: '+5% improvement'
-    }
-  ];
+  if (loading) return <div>Loading...</div>;
 
   return (
-    <div className="space-y-6">
-      {/* Stats Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-        {stats.map((stat) => {
-          const Icon = stat.icon;
-          return (
-            <div key={stat.label} className="bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 rounded-lg p-6">
-              <div className="flex items-center justify-between mb-4">
-                <div className={`p-3 rounded-lg ${stat.bg}`}>
-                  <Icon className={`size-6 ${stat.color}`} />
-                </div>
-              </div>
-              <div className="text-3xl font-bold text-gray-900 dark:text-white mb-1">{stat.value}</div>
-              <div className="text-sm text-gray-600 dark:text-gray-400 mb-2">{stat.label}</div>
-              <div className="text-xs text-green-600 dark:text-green-400">{stat.change}</div>
-            </div>
-          );
-        })}
+    <div className="space-y-8">
+
+      {/* Total Revenue */}
+      <div className="bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 rounded-lg p-6 mb-10">
+        <h2 className="text-xl font-bold mb-2">Total Revenue</h2>
+        <p className="text-3xl font-bold text-blue-600">
+          ${totalRevenue}
+        </p>
       </div>
 
-      {/* Recent Activity */}
+      {/* Events List */}
       <div className="bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 rounded-lg p-6">
-        <h2 className="text-xl font-bold text-gray-900 dark:text-white mb-4">Recent Activity</h2>
-        <div className="space-y-4">
-          {[
-            { action: 'New member joined', user: 'Alex Johnson', time: '2 hours ago' },
-            { action: 'Event booking confirmed', user: 'Sarah Smith', time: '5 hours ago' },
-            { action: 'Payment verified', user: 'Mike Chen', time: '1 day ago' },
-            { action: 'New event created', user: 'Admin', time: '2 days ago' }
-          ].map((activity, index) => (
-            <div key={index} className="flex items-start gap-3 pb-4 border-b border-gray-200 dark:border-gray-800 last:border-0 last:pb-0">
-              <div className="w-2 h-2 bg-blue-600 rounded-full mt-2"></div>
-              <div className="flex-1">
-                <div className="text-gray-900 dark:text-white font-medium">{activity.action}</div>
-                <div className="text-sm text-gray-600 dark:text-gray-400">{activity.user} • {activity.time}</div>
-              </div>
-            </div>
-          ))}
-        </div>
+        <h2 className="text-xl font-bold mb-6">Your Events</h2>
+
+        {events.length === 0 ? (
+          <p className="text-gray-500">No events created yet.</p>
+        ) : (
+          <div className="space-y-4">
+            {events.map(event => {
+              const sold = event.totalSeats - event.availableSeats;
+              const revenue = sold * event.price;
+
+              return (
+                <div
+                  key={event.id}
+                  className="border border-gray-200 dark:border-gray-800 rounded-lg p-4 flex justify-between items-center"
+                >
+                  <div>
+                    <h3 className="text-lg font-semibold">
+                      {event.title}
+                    </h3>
+                    <p className="text-sm text-gray-500">
+                      {sold} tickets sold • Revenue: ${revenue}
+                    </p>
+                  </div>
+
+                  <div className="flex gap-2">
+                    <Link
+                      to={`/events/edit/${event.id}`}
+                      className="px-4 py-2 bg-yellow-500 text-white rounded-md text-sm"
+                    >
+                      Edit
+                    </Link>
+
+                    <button
+                      onClick={() => handleDelete(event.id)}
+                      className="px-4 py-2 bg-red-600 text-white rounded-lg text-sm"
+                    >
+                      Delete
+                    </button>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        )}
       </div>
     </div>
   );

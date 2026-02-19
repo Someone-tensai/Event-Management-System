@@ -3,7 +3,7 @@ async function query_all_events(sort_by='date',type='') {
 
     
     let query = `
-        SELECT Events.*, Clubs.*,  TO_CHAR(Events.date_time AT TIME ZONE 'UTC', 'YYYY-MM-DD') AS event_date FROM Events 
+        SELECT Events.*, Clubs.* FROM Events 
         JOIN Clubs ON
         Clubs.club_id = Events.club_id
         WHERE 1=1
@@ -18,7 +18,7 @@ async function query_all_events(sort_by='date',type='') {
 
     if(sort_by=='date') 
     {
-        query+=' ORDER BY Events.date_time';
+        query+=' ORDER BY Events.event_date';
     }
     else if(sort_by == 'price')
     {
@@ -56,14 +56,14 @@ async function query_event_with_id(id)
     
 }
 
-async function query_create_new_event(club_id, title, date_time, venue, total_seats, price, due_date, category='' , description='')
+async function query_create_new_event(club_id, title, description, date, time, venue, total_seats, price, type, due_date, category='' , refund_policy, agenda, banner_url)
 {
     try{
     const result = await pool.query(
         `
-        INSERT INTO Events (club_id, title, description, date_time, venue, total_seats, price, category, due_date)
-        VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)
-        `, [club_id, title, description, date_time, venue, total_seats, price, category, due_date]
+        INSERT INTO Events (club_id, title, description,event_date, time, venue, total_seats, available_seats, price, category, due_date, refund_policy, agenda, type, banner)
+        VALUES ($1, $2, $3, $4, $5, $6, $7, $7, $8, $9, $10, $11, $12, $13, $14)
+        `, [club_id, title, description, date, time, venue, total_seats, price, category, due_date, refund_policy, agenda, type, banner_url]
     )
 }
     catch(err){

@@ -18,7 +18,8 @@ import { DashboardEventsPage } from './pages/club-dashboard/events';
 import { DashboardFinancesPage } from './pages/club-dashboard/finances';
 import { DashboardMembersPage } from './pages/club-dashboard/members';
 import { CreateEventPage } from './pages/create-event';
-
+import { CreateClubPage } from './pages/create-club';
+import {EditEvent} from './pages/club-dashboard/edit_event';
 export const router = createBrowserRouter([
   {
     path: '/',
@@ -29,8 +30,10 @@ export const router = createBrowserRouter([
       { path: 'register', Component: RegisterPage },
       { path: 'events', Component: EventsPage },
       { path: 'events/create', Component: CreateEventPage },
+      { path: 'events/edit/:id', Component: EditEvent},
       { path: 'events/:id', Component: EventDetailsPage },
       { path: 'clubs', Component: ClubsPage },
+      { path: 'clubs/create', Component: CreateClubPage },
       { path: 'clubs/:id', Component: ClubDetailsPage },
       {
         path: 'profile',
@@ -49,7 +52,8 @@ export const router = createBrowserRouter([
           { index: true, Component: DashboardOverviewPage },
           { path: 'events', Component: DashboardEventsPage },
           { path: 'finances', Component: DashboardFinancesPage },
-          { path: 'members', Component: DashboardMembersPage }
+          { path: 'members', Component: DashboardMembersPage },
+
         ]
       },
     ]

@@ -1,4 +1,4 @@
-const {find_by_id , query_get_users_admin_club, query_get_users_club,query_register_user, query_find_by_username, query_get_all_users} = require("../db/user_queries")
+const {query_update_user_info, find_by_id , query_get_users_admin_club, query_get_users_club,query_register_user, query_find_by_username, query_get_all_users} = require("../db/user_queries")
 const {query_number_of_people} = require("../db/club_queries");
 const {hash_password, compare_password} = require("../utils/hash")
 const {generate_token} = require("../utils/jwt");
@@ -9,8 +9,8 @@ const { user } = require("pg/lib/defaults");
 async function register_user_data(req, res, next)
 {
     try{
-    const {username, email, password} = req.body;
-    if(!username || !email || !password)
+    const {name, email, password} = req.body;
+    if(!name || !email || !password)
     {
         next( new app_error(
             'Required fields not given',
@@ -18,7 +18,7 @@ async function register_user_data(req, res, next)
             'INVALID_FIELD_DATA'
         ));
     }
-    const user_data = [username, email, await hash_password(password), ''];
+    const user_data = [name, email, await hash_password(password), ''];
     await query_register_user(user_data);
     res.status(200).json({
         success: true,
@@ -126,10 +126,23 @@ async function send_user_data(req, res, next)
         throw err;
     }
 }
+
+async function update_user_info(req,res) {
+    try{
+        const user_id = req.user.user_id;
+        const {username, email, profile_pic} = req.params;
+        const res = await query_update_user_info(username, email, profile_pic, user_id);
+    }
+    catch(err)
+    { 
+        throw err;
+    }
+}
 module.exports = {
     register_user_data,
     login_user, 
     get_all_users,
     logout_user, 
-    send_user_data
+    send_user_data,
+    update_user_info
 }

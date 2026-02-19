@@ -23,13 +23,14 @@ export function Navigation() {
       if (searchRef.current && !searchRef.current.contains(event.target as Node)) {
         setShowSearchResults(false);
       }
+      console.log(user?.adminClubs[0]);
     }
     document.addEventListener('mousedown', handleClickOutside);
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, []);
 
-  const handleLogout = () => {
-    logout();
+  const handleLogout = async() => {
+    await logout();
     setShowUserMenu(false);
     navigate('/');
   };
@@ -49,7 +50,7 @@ export function Navigation() {
           <div className="flex items-center gap-8">
             <Link to="/" className="flex items-center gap-2">
               <Calendar className="size-8 text-blue-600 dark:text-blue-500" />
-              <span className="text-xl font-bold text-gray-900 dark:text-white">CampusEvents</span>
+              <span className="text-xl font-bold text-gray-900 dark:text-white">EBMS</span>
             </Link>
 
             {/* Center: Navigation Links */}
@@ -176,7 +177,7 @@ export function Navigation() {
                       </Link>
                       {user.adminClubs.length > 0 && (
                         <Link
-                          to={`/clubs/${user.adminClubs[0]}/dashboard`}
+                          to={`/clubs/${user.adminClubs[0].club_id}/dashboard`}
                           onClick={() => setShowUserMenu(false)}
                           className="flex items-center gap-3 px-4 py-3 hover:bg-gray-50 dark:hover:bg-gray-700 text-gray-700 dark:text-gray-300 border-t border-gray-200 dark:border-gray-700"
                         >

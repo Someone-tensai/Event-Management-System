@@ -6,9 +6,10 @@ export interface Club {
   club_name: string,
   creator_id: number,
   invite_only: boolean,
+  description: string,
+  cover_image: string,
+  logo: string,
   members: number
-  category: string,
-  description: string
 }
 export interface Event {
   id: string;
@@ -18,11 +19,11 @@ export interface Event {
   time: string;
   venue: string;
   type: 'physical' | 'online' | 'hybrid';
+  category: 'academic'| 'sports' | 'cultural'
   image: string;
   price: number;
   totalSeats: number;
   availableSeats: number;
-  priority: boolean;
   club: Club;
   refundPolicy: string;
   agenda?: string[];
@@ -102,9 +103,8 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   };
 
   const logout = async () => {
-    await api.post(
-      "/users/logout",
-      {},
+    await api.get(
+      "/users/logout"
     );
 
     setUser(null);
@@ -116,7 +116,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       { name, email, password },
     );
 
-    const res = await api.get("/auth/me", {
+    const res = await api.get("/users/me", {
       withCredentials: true,
     });
 

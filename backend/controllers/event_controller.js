@@ -5,6 +5,7 @@ const {
   query_edit_event,
   query_delete_event,
 } = require("../db/event_queries");
+const {supabase} = require("../db/supabaseClient");
 const app_error = require("../errors/app_error");
 async function get_all_events(req, res, next) {
   try {
@@ -22,23 +23,23 @@ async function get_all_events(req, res, next) {
     }
     const events = await query_all_events(sort_by, type);
     const formatted = events.map((event) => {
-      const dateObj = new Date(event.date_time);
 
       return {
         id: event.event_id,
         title: event.title,
-        date: dateObj.toISOString().split("T")[0],
-        time: dateObj.toISOString().split("T")[1].slice(0, 5),
+        date: event.event_date.toISOString().split("T")[0],
+        time: event.time,
         type: event.category?.toLowerCase() || "physical",
-        priority: false, // or logic if you have one
         price: event.price,
         venue: event.venue,
-        image: "/default-event.jpg", // temporary until you store real images
+        category: event.category,
+        image: event.banner, // temporary until you store real images
         totalSeats: event.total_seats,
-        availableSeats: event.total_seats, // replace with real calculation later
+        availableSeats: event.available_seats, // replace with real calculation later
         club: {
+          club_id: event.club_id,
           club_name: event.club_name,
-          logo: "/default-club.png",
+          logo: event.logo,
         },
       };
     });
@@ -65,24 +66,24 @@ async function get_event_with_id(req, res, next) {
     const event = await query_event_with_id(id);
     if (event.length === 0)
       next(new app_error("Event not Found", 404, "EVENT_NOT_FOUND"));
-    const dateObj = new Date(event.date_time);
 
     const formatted = {
       id: event.event_id,
-      title: event.title,
-      date: dateObj.toISOString().split("T")[0],
-      time: dateObj.toISOString().split("T")[1].slice(0, 5),
-      type: event.category?.toLowerCase() || "physical",
-      price: event.price,
-      venue: event.venue,
-      image: "/default-event.jpg", // temporary until you store real images
-      totalSeats: event.total_seats,
-      availableSeats: event.total_seats, // replace with real calculation later
-      club: {
-        club_id: event.club_id,
-        club_name: event.club_name,
-        logo: "/default-club.png",
-      },
+        title: event.title,
+        date: event.event_date.toISOString().split("T")[0],
+        time: event.time,
+        type: event.category?.toLowerCase() || "physical",
+        price: event.price,
+        venue: event.venue,
+        category: event.category,
+        image: event.banner, // temporary until you store real images
+        totalSeats: event.total_seats,
+        availableSeats: event.available_seats, // replace with real calculation later
+        club: {
+          club_id: event.club_id,
+          club_name: event.club_name,
+          logo: event.logo,
+        }
     };
     res.json(formatted);
   } catch (err) {
@@ -100,23 +101,47 @@ async function create_new_event(req, res) {
       club_id,
       title,
       description,
-      date_time,
+      date,
+      time,
       venue,
-      total_seats,
+      totalSeats,
       price,
+      type,
       category,
       due_date,
+      refund_policy,
+      agenda
     } = req.body;
+
+    const banner_file = req.files?.["banner"]?.[0];
+    if (!banner_file) {
+      return res.status(400).json({ error: "Banner is Required" });
+    }
+    const { data: banner_data, error: banner_error } = await supabase.storage
+      .from("Assets") // <-- bucket name here
+      .upload(`banners/${Date.now()}-${banner_file.originalname}`, banner_file.buffer);
+
+      if (banner_error) throw banner_error;
+
+    const banner_url = supabase.storage
+      .from("Assets")
+      .getPublicUrl(banner_data.path).data.publicUrl;
+      
     await query_create_new_event(
       club_id,
       title,
-      date_time,
+      description,
+      date,
+      time,
       venue,
-      total_seats,
+      totalSeats,
       price,
+      type,
       due_date,
       category,
-      description,
+      refund_policy,
+      agenda,
+      banner_url
     );
     res.json("Response: Event Added");
   } catch (err) {
@@ -130,16 +155,34 @@ async function create_new_event(req, res) {
 async function edit_event(req, res) {
   try {
     const {
-      event_id,
+      club_id,
       title,
       description,
-      date_time,
+      date,
+      time,
       venue,
-      total_seats,
+      totalSeats,
       price,
+      type,
       category,
       due_date,
+      refund_policy,
+      agenda
     } = req.body;
+
+    const banner_file = req.files?.["banner"]?.[0];
+    if (!banner_file) {
+      return res.status(400).json({ error: "Banner is Required" });
+    }
+    const { data: banner_data, error: banner_error } = await supabase.storage
+      .from("Assets") // <-- bucket name here
+      .upload(`banners/${Date.now()}-${banner_file.originalname}`, banner_file.buffer);
+
+      if (banner_error) throw banner_error;
+
+    const banner_url = supabase.storage
+      .from("Assets")
+      .getPublicUrl(banner_data.path).data.publicUrl;
     await query_edit_event(
       event_id,
       title,

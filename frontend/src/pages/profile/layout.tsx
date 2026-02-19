@@ -17,7 +17,7 @@ export function ProfileLayout() {
       
       <div className="flex gap-8">
         {/* Sidebar */}
-        <aside className="w-64 flex-shrink-0">
+        <aside className="w-64 shrink-0">
           <nav className="bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 rounded-lg overflow-hidden">
             {menuItems.map((item) => {
               const Icon = item.icon;

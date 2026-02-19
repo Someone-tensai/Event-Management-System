@@ -1,7 +1,6 @@
 import { Link } from 'react-router';
 import { Users, Shield, ExternalLink } from 'lucide-react';
 import { useAuth } from '../../lib/auth-context';
-import { mockClubs } from '../../lib/mock-data';
 
 export function MyClubsPage() {
   const { user } = useAuth();
@@ -26,7 +25,7 @@ export function MyClubsPage() {
               <div key={club.club_id} className="group border border-gray-200 dark:border-gray-800 rounded-lg overflow-hidden hover:shadow-lg transition-shadow">
                 <div className="relative h-24 bg-blue-600 dark:bg-blue-800">
                   <img 
-                    src={club.coverImage} 
+                    src={club.cover_image} 
                     alt={club.club_name}
                     className="w-full h-full object-cover opacity-50"
                   />
@@ -88,7 +87,7 @@ export function MyClubsPage() {
               <div key={club.club_id} className="group border border-gray-200 dark:border-gray-800 rounded-lg overflow-hidden hover:shadow-lg transition-shadow">
                 <div className="relative h-24 bg-blue-600 dark:bg-blue-800">
                   <img 
-                    src={club.coverImage} 
+                    src={club.cover_image} 
                     alt={club.club_name}
                     className="w-full h-full object-cover opacity-50"
                   />
@@ -97,7 +96,7 @@ export function MyClubsPage() {
                     alt={club.club_name}
                     className="absolute -bottom-6 left-4 size-14 rounded-full border-4 border-white dark:border-gray-900"
                   />
-                  {user.adminClubs.includes(club.club_id) && (
+                  {user.adminClubs.includes(club.club_id as any) && (
                     <div className="absolute top-2 right-2 px-2 py-1 bg-blue-600 text-white text-xs font-bold rounded">
                       ADMIN
                     </div>

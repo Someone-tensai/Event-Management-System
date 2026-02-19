@@ -9,7 +9,7 @@ interface Club {
   category: string;
 }
 
-export interface Booking {
+interface Booking {
   id: string;
   eventId: string;
   eventName: string;

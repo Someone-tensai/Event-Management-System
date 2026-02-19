@@ -46,7 +46,7 @@ export function ClubDetailsPage() {
       {/* Cover & Header */}
       <div className="relative h-64 bg-blue-600 dark:bg-blue-800 rounded-xl overflow-hidden mb-8">
         <img 
-          src={club.coverImage} 
+          src={club.cover_image} 
           alt={club.club_name}
           className="w-full h-full object-cover opacity-50"
         />

@@ -2,8 +2,7 @@ import { useEffect, useState } from 'react';
 import { Link } from 'react-router';
 import { Calendar, MapPin, Filter, X } from 'lucide-react';
 import api from '../lib/api';
-import { Event } from '../lib/mock-data';
-
+import { Event } from '../lib/auth-context';
 
 export function EventsPage() {
   const [selectedType, setSelectedType] = useState<string[]>([]);
@@ -130,6 +129,7 @@ export function EventsPage() {
 }
 
 function EventCard({ event }: { event: any }) {
+  console.log(event);
   return (
     <Link
       to={`/events/${event.id}`}
@@ -141,11 +141,6 @@ function EventCard({ event }: { event: any }) {
           alt={event.title} 
           className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" 
         />
-        {event.priority && (
-          <div className="absolute top-3 right-3 px-2 py-1 bg-red-500 text-white text-xs font-bold rounded">
-            HIGH PRIORITY
-          </div>
-        )}
         <div className="absolute top-3 left-3 px-2 py-1 bg-black/50 text-white text-xs rounded capitalize">
           {event.type}
         </div>
@@ -166,7 +161,7 @@ function EventCard({ event }: { event: any }) {
         </div>
         <div className="flex items-center justify-between pt-3 border-t border-gray-200 dark:border-gray-800">
           <div className="flex items-center gap-2">
-            <img src={event.club.logo} alt={event.club.name} className="size-5 rounded-full" />
+            <img src={event.club.logo} alt={event.club.club_name} className="size-5 rounded-full" />
             <span className="text-sm text-gray-600 dark:text-gray-400">{event.club.name}</span>
           </div>
           <div className="text-right">

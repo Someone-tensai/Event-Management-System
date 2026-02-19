@@ -1,14 +1,32 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useAuth } from '../../lib/auth-context';
 import { Camera } from 'lucide-react';
+import api from '../../lib/api';
 
 export function ProfilePage() {
-  const { user } = useAuth();
+  const { user, refreshUser } = useAuth();
   const [name, setName] = useState(user?.name || '');
   const [email, setEmail] = useState(user?.email || '');
 
   if (!user) return null;
 
+  const form = document.querySelector(".update_form");
+  form?.addEventListener("submit", async(e)=>{
+    e.preventDefault();
+    try{
+      const res = await api.post("/users/update" , {
+      username: name,
+      email: email,
+      profile_pic: '',
+      })
+    }
+    catch(err)
+    {
+      throw err;
+    }
+    await refreshUser();
+  
+  });
   return (
     <div className="bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 rounded-lg p-6">
       <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-6">Profile Settings</h2>
@@ -17,7 +35,7 @@ export function ProfilePage() {
       <div className="flex items-center gap-6 mb-8">
         <div className="relative">
           <img
-            src={user.avatar || 'https://api.dicebear.com/7.x/avataaars/svg?seed=default'}
+            src={user.profile_pic || 'https://api.dicebear.com/7.x/avataaars/svg?seed=default'}
             alt={user.name}
             className="size-24 rounded-full"
           />
@@ -32,7 +50,7 @@ export function ProfilePage() {
       </div>
 
       {/* Form */}
-      <form className="space-y-6">
+      <form className="update_form space-y-6">
         <div>
           <label htmlFor="name" className="block text-sm font-medium text-gray-900 dark:text-white mb-2">
             Full Name

@@ -1,13 +1,29 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Link } from 'react-router';
 import { Calendar, MapPin, Upload, Eye, X } from 'lucide-react';
 import { mockBookings } from '../../lib/mock-data';
+import { Booking } from '../../lib/auth-context';
+import api from '../../lib/api';
 
 export function BookingsPage() {
   const [showTicketModal, setShowTicketModal] = useState(false);
   const [showUploadModal, setShowUploadModal] = useState(false);
   const [selectedBooking, setSelectedBooking] = useState<any>(null);
+  const [bookings, setBookings] = useState<Booking[]>([]);
 
+  useEffect(()=>{
+    async function get_bookings() {
+      try{
+        const bookings_data = await api.get("/bookings/all");
+        setBookings(bookings_data.data);
+      }
+      catch(err)
+      {
+        throw err;
+      }
+    }
+    get_bookings();
+  }, []);
   const getStatusBadge = (status: string) => {
     const styles = {
       pending: 'bg-yellow-100 dark:bg-yellow-900/30 text-yellow-800 dark:text-yellow-300 border-yellow-200 dark:border-yellow-800',
@@ -54,21 +70,21 @@ export function BookingsPage() {
               </tr>
             </thead>
             <tbody className="divide-y divide-gray-200 dark:divide-gray-800">
-              {mockBookings.map((booking) => (
+              {bookings.map((booking) => (
                 <tr key={booking.id} className="hover:bg-gray-50 dark:hover:bg-gray-800/50 transition-colors">
                   <td className="px-6 py-4">
                     <Link 
-                      to={`/events/${booking.eventId}`}
+                      to={`/events/${booking.event_id}`}
                       className="font-medium text-gray-900 dark:text-white hover:text-blue-600 dark:hover:text-blue-400"
                     >
-                      {booking.eventName}
+                      {booking.event_name}
                     </Link>
                   </td>
                   <td className="px-6 py-4">
                     <div className="text-sm text-gray-600 dark:text-gray-400">
                       <div className="flex items-center gap-1 mb-1">
                         <Calendar className="size-3" />
-                        {booking.eventDate}
+                        {booking.event_date}
                       </div>
                       <div className="flex items-center gap-1">
                         <MapPin className="size-3" />
@@ -116,7 +132,7 @@ export function BookingsPage() {
           </table>
         </div>
 
-        {mockBookings.length === 0 && (
+        {bookings.length === 0 && (
           <div className="text-center py-12">
             <Calendar className="size-12 text-gray-400 mx-auto mb-3" />
             <h3 className="text-lg font-medium text-gray-900 dark:text-white mb-2">No bookings yet</h3>

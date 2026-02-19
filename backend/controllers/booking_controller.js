@@ -3,6 +3,7 @@ const {
   query_all_bookings,
   query_booking_with_id,
   query_add_new_booking,
+  query_get_all_user_bookings,
 } = require("../db/booking_queries");
 const { query_event_with_id } = require("../db/event_queries");
 async function get_all_bookings(req, res) {
@@ -16,13 +17,37 @@ async function get_booking_with_id(req, res) {
   res.json({ booking });
 }
 
+async function get_bookings_for_user(req, res) {
+  const user_id = req.user.user_id;
+  const bookings = await query_get_all_user_bookings(user_id);
+
+  const formatted = bookings.map((booking) => {
+    const dateObj = new Date(booking.date_time);
+    return {
+      id: booking.booking_id,
+      event_id: booking.event_id,
+      event_name: booking.title,
+      event_date: dateObj.toISOString().split("T")[0],
+      venue: booking.venue,
+      tickets: booking.tickets_booked,
+      status: booking.status,
+      paymentProof: "",
+      qrCode: "",
+    };
+  });
+  res.json(formatted);
+}
 async function get_booking_of_user_for_event(req, res) {
-  const user_id  = req.user.user_id;
+  const user_id = req.user.user_id;
   const { event_id } = req.query;
   const booking = await query_get_user_booking_for_event(user_id, event_id);
   const event = await query_event_with_id(event_id);
   const dateObj = new Date(event.date_time);
 
+  if (!booking) {
+    res.json({});
+    return;
+  }
   const formatted = {
     id: booking.booking_id,
     event_id: event.event_id,
@@ -34,7 +59,6 @@ async function get_booking_of_user_for_event(req, res) {
     paymentProof: "",
     qrCode: "",
   };
-  console.log(formatted);
   res.json(formatted);
 }
 async function add_new_booking(req, res) {
@@ -53,4 +77,5 @@ module.exports = {
   get_booking_with_id,
   add_new_booking,
   get_booking_of_user_for_event,
+  get_bookings_for_user,
 };

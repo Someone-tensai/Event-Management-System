@@ -8,10 +8,11 @@ export function LoginPage() {
   const [name, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const navigate = useNavigate();
-  const {login} = useAuth();
-  const handleSubmit = (e: React.FormEvent) => {
+  const {login, refreshUser} = useAuth();
+  const handleSubmit = async(e: React.FormEvent) => {
     e.preventDefault();
-    login(name, password);
+    await login(name, password);
+    await refreshUser();
     navigate('/');
   };
 

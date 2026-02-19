@@ -64,9 +64,30 @@ async function query_get_user_booking_for_event(user_id, event_id)
         throw err;
     }
 }
+
+async function query_get_all_user_bookings(user_id) {
+    try{
+        const {rows} = await pool.query(
+            `
+            SELECT b.* , e.* FROM Bookings b
+            JOIN Events e ON
+            e.event_id = b.event_id
+            WHERE user_id = $1
+            `,
+            [user_id]
+        );
+
+        return rows;
+    }
+    catch(err)
+    {
+        throw err;
+    }
+}
 module.exports = {
     query_all_bookings,
     query_booking_with_id,
     query_add_new_booking,
-    query_get_user_booking_for_event
+    query_get_user_booking_for_event,
+    query_get_all_user_bookings
 };

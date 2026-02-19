@@ -1,12 +1,12 @@
 import { Link, Outlet, useLocation, useParams } from 'react-router';
-import { LayoutDashboard, Calendar, Users, DollarSign, ChevronLeft } from 'lucide-react';
-import { mockClubs } from '../../lib/mock-data';
-
+import { LayoutDashboard, Calendar, Users, DollarSign, ChevronLeft, User } from 'lucide-react';
+import { useAuth } from '../../lib/auth-context';
 export function ClubDashboardLayout() {
   const { id } = useParams();
+  const {user} = useAuth();
   const location = useLocation();
-  const club = mockClubs.find(c => c.id === id);
-
+  const club = user?.adminClubs[0];
+  console.log(club);
   if (!club) {
     return (
       <div className="max-w-screen-2xl mx-auto px-6 py-16 text-center">
@@ -36,16 +36,16 @@ export function ClubDashboardLayout() {
       </Link>
 
       <div className="flex items-center gap-4 mb-8">
-        <img src={club.logo} alt={club.name} className="size-16 rounded-full" />
+        <img src={club.logo} alt={club.club_name} className="size-16 rounded-full" />
         <div>
-          <h1 className="text-3xl font-bold text-gray-900 dark:text-white">{club.name} Dashboard</h1>
+          <h1 className="text-3xl font-bold text-gray-900 dark:text-white">{club.club_name} Dashboard</h1>
           <p className="text-gray-600 dark:text-gray-400">Admin Panel</p>
         </div>
       </div>
       
       <div className="flex gap-8">
         {/* Sidebar */}
-        <aside className="w-64 flex-shrink-0">
+        <aside className="w-64 shrink-0">
           <nav className="bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 rounded-lg overflow-hidden sticky top-24">
             {menuItems.map((item) => {
               const Icon = item.icon;

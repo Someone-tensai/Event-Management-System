@@ -101,11 +101,29 @@ async function query_get_users_admin_club(user_id)
         throw err;
     }
 }
+
+async function query_update_user_info(new_name, new_email, new_profile_pic, user_id) {
+    try{
+        const {rows} = await pool.query(
+            `
+            UPDATE Users SET username  = $1, email = $2,  profile_pic = $3
+            WHERE user_id = $4
+            `,
+            [new_name, new_email, new_profile_pic, user_id]
+        )
+    }
+    catch(err)
+    {
+        throw err;
+    }
+
+}
 module.exports = {
     query_register_user,
     query_find_by_username,
     query_get_all_users,
     find_by_id,
     query_get_users_club,
-    query_get_users_admin_club
+    query_get_users_admin_club,
+    query_update_user_info
 };

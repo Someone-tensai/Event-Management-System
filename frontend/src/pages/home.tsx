@@ -42,7 +42,7 @@ export function HomePage() {
         {/* Content */}
         <div className="relative h-full flex items-center justify-center">
           <div className="max-w-screen-2xl mx-auto px-6 text-center text-white">
-            <h1 className="text-6xl font-bold mb-6 drop-shadow-lg">Discover Amazing Campus Events</h1>
+            <h1 className="text-6xl font-bold mb-6 drop-shadow-lg">Discover Amazing Events</h1>
             <p className="text-xl mb-10 max-w-2xl mx-auto drop-shadow-md">
               Connect with clubs, attend exciting events, and make the most of your college experience
             </p>
@@ -171,7 +171,7 @@ function ClubCard({ club }: { club: any }) {
     >
       <div className="relative h-24 bg-blue-600 dark:bg-blue-800">
         <img 
-          src={club.coverImage} 
+          src={club.cover_image} 
           alt={club.club_name}
           className="w-full h-full object-cover opacity-50 group-hover:scale-105 transition-transform duration-300"
         />
