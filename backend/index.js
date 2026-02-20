@@ -11,11 +11,9 @@ const payment_router = require("./routes/payments");
 const app = express();
 
 dotenv.config();
-const allowed_origin =
-  "event-management-system-git-main-someone-tensais-projects.vercel.app";
 app.use(
   cors({
-    origin: allowed_origin,
+    origin: "event-management-system-git-main-someone-tensais-projects.vercel.app",
     credentials: true,
   }),
 );

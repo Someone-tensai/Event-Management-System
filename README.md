@@ -1,13 +1,5 @@
 # Smart Investment Management & Portfolio System (SIMPS)
 
-![Django](https://img.shields.io/badge/Backend-Django-092E20?style=for-the-badge&logo=django)
-![Python](https://img.shields.io/badge/Python-3.x-3776AB?style=for-the-badge&logo=python)
-![PostgreSQL](https://img.shields.io/badge/Database-PostgreSQL-4169E1?style=for-the-badge&logo=postgresql&logoColor=white)
-![TailwindCSS](https://img.shields.io/badge/UI-TailwindCSS-38B2AC?style=for-the-badge&logo=tailwind-css)
-![JavaScript](https://img.shields.io/badge/Frontend-JavaScript-F7DF1E?style=for-the-badge&logo=javascript)
-
----
-
 ## Overview
 
 **Event & Booking Management System (EBMS)** is a full-stack web application designed to streamline club-based event creation, booking management, and QR-based payment verification.
@@ -73,15 +65,19 @@ PostgreSQL (Cloud Hosted using Supabase)
 - QR code upload for payment
 - Real-time revenue tracking via bookings
 
-### 📈 Personal Portfolio
-- Add selected investments
-- Track allocated amounts
-- Manage portfolio entries
+### Booking and Payment Flow
+- User books an event
+- Seats are reserved
+- Event has an associated QR Code for payment
+- User submits payment proof (image)
+- Event creator verifies payment
+- Booking status updates to verified or rejected
+- Revenue updates automatically
 
 ### 📱 Responsive Design
 - Tailwind CSS-based UI
 - Desktop and mobile support
-
+- Dark and Light Mode Support
 ---
 
 ## 🗂 Database Design
@@ -89,175 +85,168 @@ PostgreSQL (Cloud Hosted using Supabase)
 ### Main Tables
 
 - `users`
-- `income`
-- `expenses`
-- `savings`
-- `global_equities`
-- `personal_portfolio`
-- `equity_price_history`
+- `events`
+- `clubs`
+- `userclub`
+- `bookings`
+- `payments`
+- `invites`
 
 ### Relationships
-
-- Users → Income (1:N)
-- Users → Expenses (1:N)
-- Users → Savings (1:N)
-- Users ↔ Global Equities (M:N via Personal Portfolio)
-
+ 
+- Users → Clubs (1:N via creator_id)
+- Users ↔ Clubs (M:N via userclub)
+- Clubs → Events (1:N)
+- Events → Bookings (1:N)
+- Users → Bookings(1:N)
+- Bookings → Payments (1:1)
+- Users → Invites(1:N)
+- Clubs -> Invites(1:N)
 ---
 
 ## 🛠 Tech Stack
 
 ### Backend
-- Python
-- Django
-- PosgreSQL
+- Node.js
+- Express.js
+- PostgreSQL
 
 ### Frontend
-- HTML
-- CSS
-- JavaScript
+- React
+- TypeScript(TSX)
 - Tailwind CSS
 
 ### Development Tools
 - Git & GitHub
 - VS Code
-- LaTeX (Documentation)
+- Railway (Backend Deployment)
+- Vercel (Frontend Deployment)
 
 ---
 
 ## 📁 Project Structure
 ```bash
 .
-└── simps
-    ├── README.md
-    ├── backend
-    │   ├── README.md
-    │   ├── requirements.txt
-    │   └── simps_project
-    │       ├── Procfile
-    │       ├── dashboard
-    │       │   ├── __init__.py
-    │       │   ├── admin.py
-    │       │   ├── apps.py
-    │       │   ├── db_utils.py
-    │       │   ├── migrations
-    │       │   │   └── __init__.py
-    │       │   ├── models.py
-    │       │   ├── templates
-    │       │   │   └── dashboard
-    │       │   │       ├── add_expense.html
-    │       │   │       ├── add_income.html
-    │       │   │       ├── dashboard.html
-    │       │   │       ├── view_expenses.html
-    │       │   │       ├── view_income.html
-    │       │   │       └── view_savings.html
-    │       │   ├── tests.py
-    │       │   ├── urls.py
-    │       │   └── views.py
-    │       ├── data
-    │       ├── db.sqlite3
-    │       ├── exploration
-    │       │   ├── __init__.py
-    │       │   ├── admin.py
-    │       │   ├── apps.py
-    │       │   ├── migrations
-    │       │   │   └── __init__.py
-    │       │   ├── models.py
-    │       │   ├── static
-    │       │   │   └── exploration
-    │       │   │       └── explore.js
-    │       │   ├── templates
-    │       │   │   └── exploration
-    │       │   │       └── explore.html
-    │       │   ├── tests.py
-    │       │   ├── urls.py
-    │       │   ├── utils.py
-    │       │   └── views.py
-    │       ├── manage.py
-    │       ├── package-lock.json
-    │       ├── package.json
-    │       ├── portfolio
-    │       │   ├── __init__.py
-    │       │   ├── admin.py
-    │       │   ├── apps.py
-    │       │   ├── migrations
-    │       │   │   └── __init__.py
-    │       │   ├── models.py
-    │       │   ├── static
-    │       │   │   └── portfolio
-    │       │   │       └── portfolio.js
-    │       │   ├── templates
-    │       │   │   └── portfolio
-    │       │   │       └── overview.html
-    │       │   ├── tests.py
-    │       │   ├── urls.py
-    │       │   └── views.py
-    │       ├── requirements.txt
-    │       ├── scripts
-    │       │   ├── price_updater.py
-    │       │   └── symbols.csv
-    │       ├── simps_project
-    │       │   ├── __init__.py
-    │       │   ├── asgi.py
-    │       │   ├── settings.py
-    │       │   ├── urls.py
-    │       │   └── wsgi.py
-    │       ├── static
-    │       │   ├── dist
-    │       │   │   └── style.css
-    │       │   ├── favicon.ico
-    │       │   └── src
-    │       │       └── style.css
-    │       ├── staticfiles
-    │       ├── templates
-    │       │   └── base.html
-    │       └── user
-    │           ├── __init__.py
-    │           ├── admin.py
-    │           ├── apps.py
-    │           ├── migrations
-    │           │   └── __init__.py
-    │           ├── models.py
-    │           ├── static
-    │           │   └── user
-    │           │       └── signup.js
-    │           ├── templates
-    │           │   └── user
-    │           │       ├── landing.html
-    │           │       ├── login.html
-    │           │       └── signup.html
-    │           ├── tests.py
-    │           ├── urls.py
-    │           └── views.py
-    ├── database
-    │   ├── README.md
-    │   ├── connection_info.txt
-    │   ├── schema.sql
-    │   └── seed_data.sql
-    ├── frontend
-    │   ├── README.md
-    │   └── package.json
-    ├── railway.json
-    └── requirements.txt
+┣ 📂backend
+┃ ┣ 📂config
+┃ ┃ ┗ 📜config.js
+┃ ┣ 📂controllers
+┃ ┃ ┣ 📜booking_controller.js
+┃ ┃ ┣ 📜club_controller.js
+┃ ┃ ┣ 📜event_controller.js
+┃ ┃ ┣ 📜payment_controller.js
+┃ ┃ ┗ 📜user_controller.js
+┃ ┣ 📂db
+┃ ┃ ┣ 📜booking_queries.js
+┃ ┃ ┣ 📜club_queries.js
+┃ ┃ ┣ 📜event_queries.js
+┃ ┃ ┣ 📜payment_queries.js
+┃ ┃ ┣ 📜pool.js
+┃ ┃ ┣ 📜supabaseClient.js
+┃ ┃ ┗ 📜user_queries.js
+┃ ┣ 📂errors
+┃ ┃ ┗ 📜app_error.js
+┃ ┣ 📂middleware
+┃ ┃ ┗ 📜auth_controller.js
+┃ ┣ 📂routes
+┃ ┃ ┣ 📜bookings.js
+┃ ┃ ┣ 📜club.js
+┃ ┃ ┣ 📜events.js
+┃ ┃ ┣ 📜payments.js
+┃ ┃ ┗ 📜users.js
+┃ ┣ 📂utils
+┃ ┃ ┣ 📜hash.js
+┃ ┃ ┗ 📜jwt.js
+┃ ┣ 📜.env
+┃ ┣ 📜index.js
+┃ ┗ 📜package.json
+┣ 📂database
+┃ ┣ 📂migrations
+┃ ┃ ┣ 📜001_update_users.sql
+┃ ┃ ┣ 📜002_update_clubs.sql
+┃ ┃ ┣ 📜003_club_invitations.sql
+┃ ┃ ┗ 📜004_update_payments.sql
+┃ ┣ 📜constraints.sql
+┃ ┣ 📜queries.sql
+┃ ┣ 📜schema.sql
+┃ ┗ 📜seed.sql
+┣ 📂docs
+┃ ┣ 📜guide.md
+┃ ┗ 📜schema.md
+┣ 📂frontend
+┃ ┣ 📂build
+┃ ┃ ┗ 📜index.html
+┃ ┣ 📂public
+┃ ┃ ┗ 📂img
+┃ ┃   ┗ 📜demo-img.jpg
+┃ ┣ 📂src
+┃ ┃ ┣ 📂components
+┃ ┃ ┃ ┣ 📂figma
+┃ ┃ ┃ ┃ ┗ 📜ImageWithFallback.tsx
+┃ ┃ ┃ ┣ 📂ui
+┃ ┃ ┃ ┣ 📜layout.tsx
+┃ ┃ ┃ ┗ 📜navigation.tsx
+┃ ┃ ┣ 📂lib
+┃ ┃ ┃ ┣ 📜api.ts
+┃ ┃ ┃ ┣ 📜auth-context.tsx
+┃ ┃ ┃ ┣ 📜theme-context.tsx
+┃ ┃ ┃ ┗ 📜toast.tsx
+┃ ┃ ┣ 📂pages
+┃ ┃ ┃ ┣ 📂club-dashboard
+┃ ┃ ┃ ┃ ┣ 📜delete_event.tsx
+┃ ┃ ┃ ┃ ┣ 📜edit_event.tsx
+┃ ┃ ┃ ┃ ┣ 📜events.tsx
+┃ ┃ ┃ ┃ ┣ 📜finances.tsx
+┃ ┃ ┃ ┃ ┣ 📜layout.tsx
+┃ ┃ ┃ ┃ ┣ 📜members.tsx
+┃ ┃ ┃ ┃ ┗ 📜overview.tsx
+┃ ┃ ┃ ┣ 📂profile
+┃ ┃ ┃ ┃ ┣ 📜bookings.tsx
+┃ ┃ ┃ ┃ ┣ 📜clubs.tsx
+┃ ┃ ┃ ┃ ┣ 📜layout.tsx
+┃ ┃ ┃ ┃ ┣ 📜notifications.tsx
+┃ ┃ ┃ ┃ ┗ 📜profile.tsx
+┃ ┃ ┃ ┣ 📜club-details.tsx
+┃ ┃ ┃ ┣ 📜clubs.tsx
+┃ ┃ ┃ ┣ 📜create-club.tsx
+┃ ┃ ┃ ┣ 📜create-event.tsx
+┃ ┃ ┃ ┣ 📜event-details.tsx
+┃ ┃ ┃ ┣ 📜events.tsx
+┃ ┃ ┃ ┣ 📜home.tsx
+┃ ┃ ┃ ┣ 📜login.tsx
+┃ ┃ ┃ ┗ 📜register.tsx
+┃ ┃ ┣ 📂styles
+┃ ┃ ┃ ┗ 📜globals.css
+┃ ┃ ┣ 📜App.tsx
+┃ ┃ ┣ 📜Attributions.md
+┃ ┃ ┣ 📜index.css
+┃ ┃ ┣ 📜loading.tsx
+┃ ┃ ┣ 📜main.tsx
+┃ ┃ ┗ 📜routes.ts
+┃ ┣ 📜eslint.config.js
+┃ ┣ 📜index.html
+┃ ┣ 📜package.json
+┃ ┣ 📜tailwind.config.js
+┃ ┗ 📜vite.config.js
+┣ 📜.gitignore
+┣ 📜LICENSE
+┗ 📜README.md
 
 ```
 
 ---
 
 ## 👨‍💻 Contributors
-- Prayush Bikram Khadka
-- Rhiki Ranjan Neupane
-- Shaswat Sharma
+- Sulav Paudel
+- Sitish Jaiswal
   
 ---
 
 ## 🔮 Future Improvements
-- Portfolio performance analytics
-- Risk profiling engine
-- Cloud deployment (AWS / GCP / Azure)
-
+- Invite to Club
+- Trending Catgories
+- Restricted Event Creation ROles
+- Advanced Sorting and Filtering
 ---
-
-### ⭐ If you found this project interesting, consider giving it a star!
 
 ---
