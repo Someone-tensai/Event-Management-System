@@ -1,24 +1,19 @@
-# Smart Investment Management & Portfolio System (SIMPS)
+# Event Booking and Management System (EBMS)
 
 ## Overview
 
-**Event & Booking Management System (EBMS)** is a full-stack web application designed to streamline club-based event creation, booking management, and QR-based payment verification.
+**Event Booking and Management System (EBMS)** is a full-stack web application designed to streamline club-based event creation, booking management, and QR-based payment verification.
 
 The system enables users to:
 
-Securely register and authenticate
+- Securely register and authenticate
+- Create and manage clubs
+- Create, edit, and delete events
+- Book tickets for events
+- Submit payment proof via uploaded image
+- Verify payments and track revenue
 
-Create and manage clubs
-
-Create, edit, and delete events
-
-Book tickets for events
-
-Submit payment proof via uploaded image
-
-Verify payments and track revenue
-
-EBMS emphasizes structured relational database design, transactional integrity, and scalable deployment architecture.
+- EBMS emphasizes structured relational database design , transactional integrity, and scalable deployment architecture.
 ---
 
 ## Project Objective
@@ -27,7 +22,7 @@ EBMS emphasizes structured relational database design, transactional integrity, 
 
 ---
 
-## 🏗️ System Architecture
+## System Architecture
 
 ```bash
 Frontend (ReactJs, Tailwind)
@@ -39,7 +34,7 @@ PostgreSQL (Cloud Hosted using Supabase)
 ```
 ---
 
-## 🚀 Core Features
+## Core Features
 
 ### Authentication & User Management
 - Secure sign-up and login
@@ -74,13 +69,13 @@ PostgreSQL (Cloud Hosted using Supabase)
 - Booking status updates to verified or rejected
 - Revenue updates automatically
 
-### 📱 Responsive Design
+### Responsive Design
 - Tailwind CSS-based UI
 - Desktop and mobile support
 - Dark and Light Mode Support
 ---
 
-## 🗂 Database Design
+## Database Design
 
 ### Main Tables
 
@@ -104,7 +99,7 @@ PostgreSQL (Cloud Hosted using Supabase)
 - Clubs -> Invites(1:N)
 ---
 
-## 🛠 Tech Stack
+## Tech Stack
 
 ### Backend
 - Node.js
@@ -121,132 +116,130 @@ PostgreSQL (Cloud Hosted using Supabase)
 - VS Code
 - Railway (Backend Deployment)
 - Vercel (Frontend Deployment)
+- Supabase (Database Deployment)
 
 ---
 
-## 📁 Project Structure
+## Project Structure
 ```bash
-.
+.event-management-system
 ┣ 📂backend
 ┃ ┣ 📂config
-┃ ┃ ┗ 📜config.js
+┃ ┃ ┗ config.js
 ┃ ┣ 📂controllers
-┃ ┃ ┣ 📜booking_controller.js
-┃ ┃ ┣ 📜club_controller.js
-┃ ┃ ┣ 📜event_controller.js
-┃ ┃ ┣ 📜payment_controller.js
-┃ ┃ ┗ 📜user_controller.js
+┃ ┃ ┣ booking_controller.js
+┃ ┃ ┣ club_controller.js
+┃ ┃ ┣ event_controller.js
+┃ ┃ ┣ payment_controller.js
+┃ ┃ ┗ user_controller.js
 ┃ ┣ 📂db
-┃ ┃ ┣ 📜booking_queries.js
-┃ ┃ ┣ 📜club_queries.js
-┃ ┃ ┣ 📜event_queries.js
-┃ ┃ ┣ 📜payment_queries.js
-┃ ┃ ┣ 📜pool.js
-┃ ┃ ┣ 📜supabaseClient.js
-┃ ┃ ┗ 📜user_queries.js
+┃ ┃ ┣ booking_queries.js
+┃ ┃ ┣ club_queries.js
+┃ ┃ ┣ event_queries.js
+┃ ┃ ┣ payment_queries.js
+┃ ┃ ┣ pool.js
+┃ ┃ ┣ supabaseClient.js
+┃ ┃ ┗ user_queries.js
 ┃ ┣ 📂errors
-┃ ┃ ┗ 📜app_error.js
+┃ ┃ ┗ app_error.js
 ┃ ┣ 📂middleware
-┃ ┃ ┗ 📜auth_controller.js
+┃ ┃ ┗ auth_controller.js
 ┃ ┣ 📂routes
-┃ ┃ ┣ 📜bookings.js
-┃ ┃ ┣ 📜club.js
-┃ ┃ ┣ 📜events.js
-┃ ┃ ┣ 📜payments.js
-┃ ┃ ┗ 📜users.js
+┃ ┃ ┣ bookings.js
+┃ ┃ ┣ club.js
+┃ ┃ ┣ events.js
+┃ ┃ ┣ payments.js
+┃ ┃ ┗ users.js
 ┃ ┣ 📂utils
-┃ ┃ ┣ 📜hash.js
-┃ ┃ ┗ 📜jwt.js
-┃ ┣ 📜.env
-┃ ┣ 📜index.js
-┃ ┗ 📜package.json
+┃ ┃ ┣ hash.js
+┃ ┃ ┗ jwt.js
+┃ ┣ index.js
+┃ ┗ package.json
 ┣ 📂database
 ┃ ┣ 📂migrations
-┃ ┃ ┣ 📜001_update_users.sql
-┃ ┃ ┣ 📜002_update_clubs.sql
-┃ ┃ ┣ 📜003_club_invitations.sql
-┃ ┃ ┗ 📜004_update_payments.sql
-┃ ┣ 📜constraints.sql
-┃ ┣ 📜queries.sql
-┃ ┣ 📜schema.sql
-┃ ┗ 📜seed.sql
+┃ ┃ ┣ 001_update_users.sql
+┃ ┃ ┣ 002_update_clubs.sql
+┃ ┃ ┣ 003_club_invitations.sql
+┃ ┃ ┗ 004_update_payments.sql
+┃ ┣ constraints.sql
+┃ ┣ queries.sql
+┃ ┣ schema.sql
+┃ ┗ seed.sql
 ┣ 📂docs
-┃ ┣ 📜guide.md
-┃ ┗ 📜schema.md
+┃ ┣ guide.md
+┃ ┗ schema.md
 ┣ 📂frontend
 ┃ ┣ 📂build
-┃ ┃ ┗ 📜index.html
+┃ ┃ ┗ index.html
 ┃ ┣ 📂public
 ┃ ┃ ┗ 📂img
-┃ ┃   ┗ 📜demo-img.jpg
+┃ ┃   ┗ demo-img.jpg
 ┃ ┣ 📂src
 ┃ ┃ ┣ 📂components
 ┃ ┃ ┃ ┣ 📂figma
-┃ ┃ ┃ ┃ ┗ 📜ImageWithFallback.tsx
+┃ ┃ ┃ ┃ ┗ ImageWithFallback.tsx
 ┃ ┃ ┃ ┣ 📂ui
-┃ ┃ ┃ ┣ 📜layout.tsx
-┃ ┃ ┃ ┗ 📜navigation.tsx
+┃ ┃ ┃ ┣ layout.tsx
+┃ ┃ ┃ ┗ navigation.tsx
 ┃ ┃ ┣ 📂lib
-┃ ┃ ┃ ┣ 📜api.ts
-┃ ┃ ┃ ┣ 📜auth-context.tsx
-┃ ┃ ┃ ┣ 📜theme-context.tsx
-┃ ┃ ┃ ┗ 📜toast.tsx
+┃ ┃ ┃ ┣ api.ts
+┃ ┃ ┃ ┣ auth-context.tsx
+┃ ┃ ┃ ┣ theme-context.tsx
+┃ ┃ ┃ ┗ toast.tsx
 ┃ ┃ ┣ 📂pages
 ┃ ┃ ┃ ┣ 📂club-dashboard
-┃ ┃ ┃ ┃ ┣ 📜delete_event.tsx
-┃ ┃ ┃ ┃ ┣ 📜edit_event.tsx
-┃ ┃ ┃ ┃ ┣ 📜events.tsx
-┃ ┃ ┃ ┃ ┣ 📜finances.tsx
-┃ ┃ ┃ ┃ ┣ 📜layout.tsx
-┃ ┃ ┃ ┃ ┣ 📜members.tsx
-┃ ┃ ┃ ┃ ┗ 📜overview.tsx
+┃ ┃ ┃ ┃ ┣ delete_event.tsx
+┃ ┃ ┃ ┃ ┣ edit_event.tsx
+┃ ┃ ┃ ┃ ┣ events.tsx
+┃ ┃ ┃ ┃ ┣ finances.tsx
+┃ ┃ ┃ ┃ ┣ layout.tsx
+┃ ┃ ┃ ┃ ┣ members.tsx
+┃ ┃ ┃ ┃ ┗ overview.tsx
 ┃ ┃ ┃ ┣ 📂profile
-┃ ┃ ┃ ┃ ┣ 📜bookings.tsx
-┃ ┃ ┃ ┃ ┣ 📜clubs.tsx
-┃ ┃ ┃ ┃ ┣ 📜layout.tsx
-┃ ┃ ┃ ┃ ┣ 📜notifications.tsx
-┃ ┃ ┃ ┃ ┗ 📜profile.tsx
-┃ ┃ ┃ ┣ 📜club-details.tsx
-┃ ┃ ┃ ┣ 📜clubs.tsx
-┃ ┃ ┃ ┣ 📜create-club.tsx
-┃ ┃ ┃ ┣ 📜create-event.tsx
-┃ ┃ ┃ ┣ 📜event-details.tsx
-┃ ┃ ┃ ┣ 📜events.tsx
-┃ ┃ ┃ ┣ 📜home.tsx
-┃ ┃ ┃ ┣ 📜login.tsx
-┃ ┃ ┃ ┗ 📜register.tsx
+┃ ┃ ┃ ┃ ┣ bookings.tsx
+┃ ┃ ┃ ┃ ┣ clubs.tsx
+┃ ┃ ┃ ┃ ┣ layout.tsx
+┃ ┃ ┃ ┃ ┣ notifications.tsx
+┃ ┃ ┃ ┃ ┗ profile.tsx
+┃ ┃ ┃ ┣ club-details.tsx
+┃ ┃ ┃ ┣ clubs.tsx
+┃ ┃ ┃ ┣ create-club.tsx
+┃ ┃ ┃ ┣ create-event.tsx
+┃ ┃ ┃ ┣ event-details.tsx
+┃ ┃ ┃ ┣ events.tsx
+┃ ┃ ┃ ┣ home.tsx
+┃ ┃ ┃ ┣ login.tsx
+┃ ┃ ┃ ┗ register.tsx
 ┃ ┃ ┣ 📂styles
-┃ ┃ ┃ ┗ 📜globals.css
-┃ ┃ ┣ 📜App.tsx
-┃ ┃ ┣ 📜Attributions.md
-┃ ┃ ┣ 📜index.css
-┃ ┃ ┣ 📜loading.tsx
-┃ ┃ ┣ 📜main.tsx
-┃ ┃ ┗ 📜routes.ts
-┃ ┣ 📜eslint.config.js
-┃ ┣ 📜index.html
-┃ ┣ 📜package.json
-┃ ┣ 📜tailwind.config.js
-┃ ┗ 📜vite.config.js
-┣ 📜.gitignore
-┣ 📜LICENSE
-┗ 📜README.md
+┃ ┃ ┃ ┗ globals.css
+┃ ┃ ┣ App.tsx
+┃ ┃ ┣ Attributions.md
+┃ ┃ ┣ index.css
+┃ ┃ ┣ loading.tsx
+┃ ┃ ┣ main.tsx
+┃ ┃ ┗ routes.ts
+┃ ┣ eslint.config.js
+┃ ┣ index.html
+┃ ┣ package.json
+┃ ┣ tailwind.config.js
+┃ ┗ vite.config.js
+┣ .gitignore
+┣ LICENSE
+┗ README.md
 
 ```
 
 ---
 
-## 👨‍💻 Contributors
+## Contributors
 - Sulav Paudel
 - Sitish Jaiswal
   
 ---
 
-## 🔮 Future Improvements
+## Future Improvements
 - Invite to Club
 - Trending Catgories
 - Restricted Event Creation ROles
 - Advanced Sorting and Filtering
----
-
 ---
