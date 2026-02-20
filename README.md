@@ -240,6 +240,6 @@ PostgreSQL (Cloud Hosted using Supabase)
 ## Future Improvements
 - Invite to Club
 - Trending Catgories
-- Restricted Event Creation ROles
+- Restricted Event Creation Roles
 - Advanced Sorting and Filtering
 ---
