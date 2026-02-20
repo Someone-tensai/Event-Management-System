@@ -1,32 +1,69 @@
-import { useState } from 'react';
-import { MoreVertical, Shield, UserMinus, Mail, X } from 'lucide-react';
+import { useState } from "react";
+import { MoreVertical, Shield, UserMinus, Mail, X } from "lucide-react";
 
 // Mock member data
 const mockMembers = [
-  { id: '1', name: 'John Student', email: 'john@college.edu', role: 'member', joinedDate: 'Jan 15, 2026', avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=John' },
-  { id: '2', name: 'Sarah Admin', email: 'sarah@college.edu', role: 'admin', joinedDate: 'Sep 1, 2025', avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=Sarah' },
-  { id: '3', name: 'Mike Chen', email: 'mike@college.edu', role: 'member', joinedDate: 'Oct 10, 2025', avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=Mike' },
-  { id: '4', name: 'Emma Wilson', email: 'emma@college.edu', role: 'admin', joinedDate: 'Nov 5, 2025', avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=Emma' },
-  { id: '5', name: 'Alex Johnson', email: 'alex@college.edu', role: 'member', joinedDate: 'Dec 20, 2025', avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=Alex' }
+  {
+    id: "1",
+    name: "John Student",
+    email: "john@college.edu",
+    role: "member",
+    joinedDate: "Jan 15, 2026",
+    avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=John",
+  },
+  {
+    id: "2",
+    name: "Sarah Admin",
+    email: "sarah@college.edu",
+    role: "admin",
+    joinedDate: "Sep 1, 2025",
+    avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=Sarah",
+  },
+  {
+    id: "3",
+    name: "Mike Chen",
+    email: "mike@college.edu",
+    role: "member",
+    joinedDate: "Oct 10, 2025",
+    avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=Mike",
+  },
+  {
+    id: "4",
+    name: "Emma Wilson",
+    email: "emma@college.edu",
+    role: "admin",
+    joinedDate: "Nov 5, 2025",
+    avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=Emma",
+  },
+  {
+    id: "5",
+    name: "Alex Johnson",
+    email: "alex@college.edu",
+    role: "member",
+    joinedDate: "Dec 20, 2025",
+    avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=Alex",
+  },
 ];
 
 export function DashboardMembersPage() {
   const [members, setMembers] = useState(mockMembers);
   const [showInviteModal, setShowInviteModal] = useState(false);
   const [activeMenu, setActiveMenu] = useState<string | null>(null);
-
+  const under_construction = true;
   const handlePromoteToAdmin = (memberId: string) => {
-    setMembers(prev => prev.map(m => m.id === memberId ? { ...m, role: 'admin' } : m));
+    setMembers((prev) =>
+      prev.map((m) => (m.id === memberId ? { ...m, role: "admin" } : m)),
+    );
     setActiveMenu(null);
   };
 
   const handleRemoveMember = (memberId: string) => {
-    setMembers(prev => prev.filter(m => m.id !== memberId));
+    setMembers((prev) => prev.filter((m) => m.id !== memberId));
     setActiveMenu(null);
   };
 
   const getRoleBadge = (role: string) => {
-    if (role === 'admin') {
+    if (role === "admin") {
       return (
         <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 dark:bg-blue-900/30 text-blue-800 dark:text-blue-300 border border-blue-200 dark:border-blue-800">
           <Shield className="size-3" />
@@ -41,14 +78,20 @@ export function DashboardMembersPage() {
     );
   };
 
-  return (
+  return under_construction ? (
+    <>Page Under Construction</>
+  ) : (
     <>
       <div className="bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 rounded-lg overflow-hidden">
         <div className="p-6 border-b border-gray-200 dark:border-gray-800">
           <div className="flex items-center justify-between">
             <div>
-              <h2 className="text-2xl font-bold text-gray-900 dark:text-white">Members</h2>
-              <p className="text-gray-600 dark:text-gray-400 mt-1">{members.length} total members</p>
+              <h2 className="text-2xl font-bold text-gray-900 dark:text-white">
+                Members
+              </h2>
+              <p className="text-gray-600 dark:text-gray-400 mt-1">
+                {members.length} total members
+              </p>
             </div>
             <button
               onClick={() => setShowInviteModal(true)}
@@ -84,26 +127,37 @@ export function DashboardMembersPage() {
             </thead>
             <tbody className="divide-y divide-gray-200 dark:divide-gray-800">
               {members.map((member) => (
-                <tr key={member.id} className="hover:bg-gray-50 dark:hover:bg-gray-800/50 transition-colors">
+                <tr
+                  key={member.id}
+                  className="hover:bg-gray-50 dark:hover:bg-gray-800/50 transition-colors"
+                >
                   <td className="px-6 py-4">
                     <div className="flex items-center gap-3">
-                      <img src={member.avatar} alt={member.name} className="size-10 rounded-full" />
-                      <div className="font-medium text-gray-900 dark:text-white">{member.name}</div>
+                      <img
+                        src={member.avatar}
+                        alt={member.name}
+                        className="size-10 rounded-full"
+                      />
+                      <div className="font-medium text-gray-900 dark:text-white">
+                        {member.name}
+                      </div>
                     </div>
                   </td>
                   <td className="px-6 py-4 text-sm text-gray-600 dark:text-gray-400">
                     {member.email}
                   </td>
-                  <td className="px-6 py-4">
-                    {getRoleBadge(member.role)}
-                  </td>
+                  <td className="px-6 py-4">{getRoleBadge(member.role)}</td>
                   <td className="px-6 py-4 text-sm text-gray-600 dark:text-gray-400">
                     {member.joinedDate}
                   </td>
                   <td className="px-6 py-4 text-right">
                     <div className="relative inline-block">
                       <button
-                        onClick={() => setActiveMenu(activeMenu === member.id ? null : member.id)}
+                        onClick={() =>
+                          setActiveMenu(
+                            activeMenu === member.id ? null : member.id,
+                          )
+                        }
                         className="p-2 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-lg transition-colors"
                       >
                         <MoreVertical className="size-4 text-gray-600 dark:text-gray-400" />
@@ -111,7 +165,7 @@ export function DashboardMembersPage() {
 
                       {activeMenu === member.id && (
                         <div className="absolute right-0 mt-2 w-56 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg shadow-lg overflow-hidden z-10">
-                          {member.role === 'member' && (
+                          {member.role === "member" && (
                             <button
                               onClick={() => handlePromoteToAdmin(member.id)}
                               className="w-full text-left px-4 py-3 hover:bg-gray-50 dark:hover:bg-gray-700 text-gray-700 dark:text-gray-300 flex items-center gap-2"
@@ -147,7 +201,7 @@ export function DashboardMembersPage() {
 }
 
 function InviteMemberModal({ onClose }: { onClose: () => void }) {
-  const [email, setEmail] = useState('');
+  const [email, setEmail] = useState("");
   const [sent, setSent] = useState(false);
 
   const handleSend = () => {
@@ -165,13 +219,19 @@ function InviteMemberModal({ onClose }: { onClose: () => void }) {
             <div className="inline-flex items-center justify-center w-16 h-16 bg-green-100 dark:bg-green-900 rounded-full mb-4">
               <Mail className="size-8 text-green-600 dark:text-green-400" />
             </div>
-            <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-2">Invitation Sent!</h3>
-            <p className="text-gray-600 dark:text-gray-400">Member will receive an email invitation</p>
+            <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-2">
+              Invitation Sent!
+            </h3>
+            <p className="text-gray-600 dark:text-gray-400">
+              Member will receive an email invitation
+            </p>
           </div>
         ) : (
           <>
             <div className="flex items-center justify-between mb-6">
-              <h2 className="text-2xl font-bold text-gray-900 dark:text-white">Invite Member</h2>
+              <h2 className="text-2xl font-bold text-gray-900 dark:text-white">
+                Invite Member
+              </h2>
               <button
                 onClick={onClose}
                 className="p-2 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-lg transition-colors"
@@ -181,7 +241,10 @@ function InviteMemberModal({ onClose }: { onClose: () => void }) {
             </div>
 
             <div className="mb-6">
-              <label htmlFor="email" className="block text-sm font-medium text-gray-900 dark:text-white mb-2">
+              <label
+                htmlFor="email"
+                className="block text-sm font-medium text-gray-900 dark:text-white mb-2"
+              >
                 Email Address
               </label>
               <input
@@ -206,8 +269,8 @@ function InviteMemberModal({ onClose }: { onClose: () => void }) {
                 disabled={!email}
                 className={`flex-1 px-4 py-2 rounded-lg transition-colors ${
                   email
-                    ? 'bg-blue-600 text-white hover:bg-blue-700'
-                    : 'bg-gray-300 dark:bg-gray-700 text-gray-500 dark:text-gray-500 cursor-not-allowed'
+                    ? "bg-blue-600 text-white hover:bg-blue-700"
+                    : "bg-gray-300 dark:bg-gray-700 text-gray-500 dark:text-gray-500 cursor-not-allowed"
                 }`}
               >
                 Send Invitation

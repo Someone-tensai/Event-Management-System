@@ -1,93 +1,93 @@
-const { user } = require("pg/lib/defaults");
 const App_Error = require("../errors/app_error.js");
 const pool = require("./pool.js");
 
-async function query_all_bookings()
-{
-    const {rows} = await pool.query(
-        `
+async function query_all_bookings() {
+  const { rows } = await pool.query(
+    `
         SELECT * FROM Bookings
-        `
-    );
-    return rows;
+        `,
+  );
+  return rows;
 }
 
-async function query_booking_with_id(id)
-{
-    const {rows} = await pool.query(
-        `
+async function query_booking_with_id(id) {
+  const { rows } = await pool.query(
+    `
         SELECT * FROM Bookings WHERE booking_id = $1
-        `, [id]
-    );
-    return rows[0];
+        `,
+    [id],
+  );
+  return rows[0];
 }
 
-async function query_add_new_booking(booking_array)
-{
-    try{
+async function query_add_new_booking(booking_array) {
+  try {
     const results = await pool.query(
-        `
+      `
         INSERT INTO Bookings (user_id, event_id, tickets_booked, status)
         VALUES ($1, $2, $3, $4)
-        `,[booking_array[0], booking_array[1], booking_array[2], booking_array[3]]
+        `,
+      [booking_array[0], booking_array[1], booking_array[2], booking_array[3]],
     );
-}
-    catch(err)
-    {
-        if(err.code === '23503')
-        {
-            throw new App_Error(
-                'Event Does Not exist',
-                404,
-                'INVALID_EVENT_ID'
-            )
-        }
-        throw err;
+  } catch (err) {
+    if (err.code === "23503") {
+      throw new App_Error("Event Does Not exist", 404, "INVALID_EVENT_ID");
     }
+    throw err;
+  }
 }
 
-async function query_get_user_booking_for_event(user_id, event_id)
-{
-
-    try{
-        const {rows} = await pool.query(
-            `
+async function query_get_user_booking_for_event(user_id, event_id) {
+  try {
+    const { rows } = await pool.query(
+      `
             SELECT * FROM Bookings WHERE user_id = $1 AND event_id = $2
             `,
-            [user_id, event_id]
-        );
+      [user_id, event_id],
+    );
 
-        return rows[0];
-    }
-    catch(err)
-    {
-        throw err;
-    }
+    return rows[0];
+  } catch (err) {
+    throw err;
+  }
 }
 
 async function query_get_all_user_bookings(user_id) {
-    try{
-        const {rows} = await pool.query(
-            `
+  try {
+    const { rows } = await pool.query(
+      `
             SELECT b.* , e.* FROM Bookings b
             JOIN Events e ON
             e.event_id = b.event_id
             WHERE user_id = $1
             `,
-            [user_id]
-        );
+      [user_id],
+    );
 
-        return rows;
-    }
-    catch(err)
-    {
-        throw err;
-    }
+    return rows;
+  } catch (err) {
+    throw err;
+  }
+}
+
+async function query_verify_booking(booking_id, status) {
+  try {
+    const { rows } = await pool.query(
+      `
+                UPDATE Bookings SET status = $1 
+                WHERE booking_id = $2
+                `,
+      [status, booking_id],
+    );
+  } catch (err) {
+    throw err;
+  }
 }
 module.exports = {
-    query_all_bookings,
-    query_booking_with_id,
-    query_add_new_booking,
-    query_get_user_booking_for_event,
-    query_get_all_user_bookings
+  query_all_bookings,
+  query_booking_with_id,
+  query_add_new_booking,
+  query_get_user_booking_for_event,
+  query_get_all_user_bookings,
+  query_verify_booking,
 };

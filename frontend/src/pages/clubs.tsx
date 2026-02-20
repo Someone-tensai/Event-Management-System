@@ -4,18 +4,31 @@ import { useState, useEffect } from "react";
 import api from "../lib/api";
 import { Club } from "../lib/auth-context";
 import { useAuth } from "../lib/auth-context";
-
+import { Loading } from "../loading";
+import { toast } from "../lib/toast";
 export function ClubsPage() {
   const [clubs, setClubs] = useState<Club[]>([]);
+  const [loading, setLoading] = useState<boolean>(true);
   useEffect(() => {
     async function get_clubs() {
-      const res = await api.get(`/clubs`);
-      setClubs(res.data);
+      try {
+        const res = await api.get(`/clubs`);
+        setClubs(res.data);
+      } catch (err) {
+        toast.error("ERROR: Could not fetch Clubs");
+        throw err;
+      } finally {
+        setLoading(false);
+      }
     }
     get_clubs();
   }, []);
 
-  return (
+  return loading ? (
+    <>
+      <Loading />
+    </>
+  ) : (
     <div className="max-w-screen-2xl mx-auto px-6 py-8">
       <div className="mb-8">
         <h1 className="text-4xl font-bold text-gray-900 dark:text-white mb-2">

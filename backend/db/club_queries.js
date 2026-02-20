@@ -4,11 +4,12 @@ async function query_get_all_clubs() {
   try {
     const { rows } = await pool.query(
       `
-        SELECT * FROM Clubs;
+        SELECT c.* , COUNT(u.user_id) AS members FROM Clubs c 
+        JOIN UserClub u ON
+        u.club_id = c.club_id 
+        GROUP BY c.club_id;
         `,
-      // `
-      // SELECT creator_id, ARRAY_AGG(club_name) AS Clubs FROM Clubs GROUP BY creator_id
-      // `
+
     );
     return rows;
   } catch (err) {
@@ -20,7 +21,10 @@ async function query_club_details(club_id) {
   try {
     const { rows } = await pool.query(
       `
-            SELECT * FROM Clubs WHERE club_id = $1
+        SELECT c.*, COUNT(u.user_id) AS members FROM Clubs c 
+        JOIN UserClub u ON
+        u.club_id = c.club_id 
+        GROUP BY c.club_id HAVING c.club_id = $1
             `,
       [club_id],
     );
@@ -43,7 +47,14 @@ async function query_clubid_by_name(club_name) {
   }
 }
 
-async function query_create_new_club(club_name, creator_id,logo, cover_image, invite_only, description) {
+async function query_create_new_club(
+  club_name,
+  creator_id,
+  logo,
+  cover_image,
+  invite_only,
+  description,
+) {
   try {
     const result = await pool.query(
       `
@@ -196,17 +207,15 @@ async function query_disable_invite(user_id, club_id) {
 }
 
 async function query_get_events_of_clubs(club_id) {
-  try{
-    const {rows} = await pool.query(
+  try {
+    const { rows } = await pool.query(
       `
       SELECT * FROM Events WHERE club_id = $1
-      `, 
-      [club_id]
+      `,
+      [club_id],
     );
     return rows;
-  }
-  catch(err)
-  {
+  } catch (err) {
     throw err;
   }
 }
@@ -225,5 +234,5 @@ module.exports = {
   query_leave_club,
   query_disable_invite,
   query_club_details,
-  query_get_events_of_clubs
+  query_get_events_of_clubs,
 };

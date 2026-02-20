@@ -1,4 +1,4 @@
-import { toast as sonnerToast } from 'sonner@2.0.3';
+import { toast as sonnerToast } from "sonner@2.0.3";
 
 export const toast = {
   success: (message: string) => {
@@ -9,5 +9,5 @@ export const toast = {
   },
   info: (message: string) => {
     sonnerToast.info(message);
-  }
+  },
 };

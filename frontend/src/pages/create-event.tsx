@@ -23,6 +23,7 @@ interface EventFormData {
   isFree: boolean;
   club_id: string | undefined;
   refundPolicy: string;
+  qr_code: string;
 }
 
 export function CreateEventPage() {
@@ -37,7 +38,7 @@ export function CreateEventPage() {
     description: "",
     banner: "",
     date: "",
-    due_date : "",
+    due_date: "",
     time: "",
     venue: "",
     totalSeats: "",
@@ -45,6 +46,7 @@ export function CreateEventPage() {
     isFree: true,
     club_id: user?.adminClubs[0].club_id,
     refundPolicy: "Full refund available up to 48 hours before the event",
+    qr_code: "",
   });
 
   // Check if user is club member
@@ -101,7 +103,6 @@ export function CreateEventPage() {
     }
     toast.success("Event created successfully!");
     navigate("/events");
-  
   };
 
   const canProceed = () => {
@@ -405,6 +406,7 @@ export function CreateEventPage() {
               <input
                 type="number"
                 value={formData.totalSeats}
+                min={1}
                 onChange={(e) => updateField("totalSeats", e.target.value)}
                 placeholder="e.g., 100"
                 className="w-full px-4 py-2 bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 dark:text-white"
@@ -425,18 +427,60 @@ export function CreateEventPage() {
               </label>
 
               {!formData.isFree && (
-                <div>
-                  <label className="block text-sm font-medium text-gray-900 dark:text-white mb-2">
-                    Ticket Price (USD) *
-                  </label>
-                  <input
-                    type="number"
-                    value={formData.price}
-                    onChange={(e) => updateField("price", e.target.value)}
-                    placeholder="e.g., 10"
-                    className="w-full px-4 py-2 bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 dark:text-white"
-                  />
-                </div>
+                <>
+                  <div>
+                    <label className="block text-sm font-medium text-gray-900 dark:text-white mb-2">
+                      Ticket Price (USD) *
+                    </label>
+                    <input
+                      type="number"
+                      min={1}
+                      value={formData.price}
+                      onChange={(e) => {
+                        if (parseInt(e.target.value) > 0)
+                          updateField("price", parseInt(e.target.value));
+                      }}
+                      placeholder="e.g., 10"
+                      className="w-full px-4 py-2 bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 dark:text-white"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block text-sm font-medium text-gray-900 dark:text-white mb-2 mt-2">
+                      Event QR Code
+                    </label>
+                    <div className="border-2 border-dashed border-gray-300 dark:border-gray-700 rounded-lg p-8 text-center">
+                      <Upload className="size-12 text-gray-400 mx-auto mb-3" />
+                      <p className="text-gray-700 dark:text-gray-300 font-medium mb-1">
+                        Drop The QR Code here, or{" "}
+                        <label
+                          htmlFor="banner-upload"
+                          className="text-blue-600 dark:text-blue-400 cursor-pointer hover:underline"
+                        >
+                          browse
+                        </label>
+                      </p>
+                      <p className="text-sm text-gray-500 dark:text-gray-500">
+                        Recommended: 1200x675px
+                      </p>
+                      <input
+                        id="banner-upload"
+                        type="file"
+                        className="hidden"
+                        accept="image/*"
+                        onChange={(e) => {
+                          updateField("qr_code", e.target.files?.[0]);
+                        }}
+                      />
+                    </div>
+                    {formData.qr_code && (
+                      <img
+                        src={URL.createObjectURL(formData.qr_code as any)}
+                        className="mt-3 w-24 h-24 rounded-full object-cover"
+                      />
+                    )}
+                  </div>
+                </>
               )}
             </div>
 
@@ -559,7 +603,7 @@ export function CreateEventPage() {
               onClick={handleSubmit}
               className="px-6 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors"
             >
-              Submit for Approval
+              Submit
             </button>
           )}
         </div>

@@ -29,8 +29,31 @@ async function get_all_clubs(req, res, next) {
 async function get_club_details(req, res, next) {
   try {
     const { club_id } = req.params;
-    const rows = await query_club_details(club_id);
-    res.json(rows);
+    const club = await query_club_details(club_id);
+    const events = await query_get_events_of_clubs(club_id);
+    const formatted_events = events.map((event) => {
+      return {
+        id: event.event_id,
+        title: event.title,
+        date: event.event_date.toISOString().split("T")[0],
+        time: event.time,
+        type: event.type?.toLowerCase() || "physical",
+        price: event.price,
+        image: event.banner,
+      };
+    });
+    const formatted = {
+      club_id: club.club_id,
+      club_name: club.club_name,
+      creator_id: club.creator_id,
+      logo: club.logo,
+      cover_image: club.cover_image,
+      invite_only: club.invite_only,
+      description: club.description,
+      members: club.members,
+      events: formatted_events,
+    };
+    res.json(formatted);
   } catch (err) {
     next(err);
   }
@@ -180,24 +203,23 @@ async function leave_club(req, res, next) {
 
 async function get_event_of_clubs(req, res, next) {
   try {
-    const {club_id} = req.params;
+    const { club_id } = req.params;
     const events = await query_get_events_of_clubs(club_id);
     const formatted = events.map((event) => {
       return {
-      id: event.event_id,
-      title: event.title,
-      date: event.event_date.toISOString().split("T")[0],
-      time: event.time,
-      type: event.category?.toLowerCase() || "physical",
-      price: event.price,
-      venue: event.venue,
-      image: event.banner, 
-      totalSeats: event.total_seats,
-      availableSeats: event.total_seats,
-    }
-  });
-  res.json(formatted);
-
+        id: event.event_id,
+        title: event.title,
+        date: event.event_date.toISOString().split("T")[0],
+        time: event.time,
+        type: event.category?.toLowerCase() || "physical",
+        price: event.price,
+        venue: event.venue,
+        image: event.banner,
+        totalSeats: event.total_seats,
+        availableSeats: event.total_seats,
+      };
+    });
+    res.json(formatted);
   } catch (err) {
     throw err;
   }

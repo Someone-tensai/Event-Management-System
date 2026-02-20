@@ -8,7 +8,7 @@ import { useAuth } from "../lib/auth-context";
 export function CreateClubPage() {
   const navigate = useNavigate();
 
-  const {refreshUser} = useAuth();
+  const { refreshUser } = useAuth();
   const [name, setName] = useState("");
   const [logo, setLogo] = useState<File | null>(null);
   const [cover_image, setCoverImage] = useState<File | null>(null);
@@ -25,15 +25,15 @@ export function CreateClubPage() {
   };
 
   const handleSubmit = async () => {
-    if (!name) {
-      toast.error("Club name is required");
+    if (!name || !logo || !cover_image) {
+      toast.error("All Fields are required");
       return;
     }
 
     try {
       const formData = new FormData();
       formData.append("club_name", name);
-      formData.append("invite_only", inviteOnly);
+      formData.append("invite_only", inviteOnly as any);
       formData.append("description", description);
       if (logo) formData.append("logo", logo);
       if (cover_image) formData.append("cover_image", cover_image);
@@ -74,26 +74,26 @@ export function CreateClubPage() {
             className="w-full px-4 py-2 border rounded-lg"
             placeholder="e.g., Tech Club"
           />
-
-          
         </div>
         <div className="flex items-center gap-2 mb-4">
-            <input
-              type="checkbox"
-              id="inviteOnly"
-              checked={inviteOnly}
-              onChange={(e) => setInviteOnly(!inviteOnly)}
-              className="h-4 w-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500"
-            />
-            <label
-              htmlFor="inviteOnly"
-              className="text-sm font-medium text-gray-900 dark:text-white"
-            >
-              Invite Only
-            </label>
-          </div>
+          <input
+            type="checkbox"
+            id="inviteOnly"
+            checked={inviteOnly}
+            onChange={(e) => setInviteOnly(!inviteOnly)}
+            className="h-4 w-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500"
+          />
+          <label
+            htmlFor="inviteOnly"
+            className="text-sm font-medium text-gray-900 dark:text-white"
+          >
+            Invite Only
+          </label>
+        </div>
         <div>
-          <label className="block text-sm font-medium mb-2">Club Description *</label>
+          <label className="block text-sm font-medium mb-2">
+            Club Description *
+          </label>
           <input
             type="text"
             value={description}
@@ -102,7 +102,6 @@ export function CreateClubPage() {
             className="w-full px-4 py-2 border rounded-lg"
             placeholder="e.g., Tech Club"
           />
-
         </div>
         {/* Logo Upload */}
         <div>
@@ -132,7 +131,9 @@ export function CreateClubPage() {
 
         {/* Banner Upload */}
         <div>
-          <label className="block text-sm font-medium mb-2">Cover Image *</label>
+          <label className="block text-sm font-medium mb-2">
+            Cover Image *
+          </label>
           {
             <label className="flex flex-col items-center justify-center border-2 border-dashed rounded-lg p-6 cursor-pointer">
               <Upload className="size-8 mb-2 text-gray-400" />

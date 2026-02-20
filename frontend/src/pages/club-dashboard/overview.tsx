@@ -27,7 +27,7 @@ export function DashboardOverviewPage() {
   async function handleDelete(eventId: any) {
     try {
       await api.delete(`/events/${eventId}`);
-      setEvents(prev => prev.filter(e => e.id !== eventId));
+      setEvents((prev) => prev.filter((e) => e.id !== eventId));
     } catch (err) {
       console.error(err);
     }
@@ -42,13 +42,10 @@ export function DashboardOverviewPage() {
 
   return (
     <div className="space-y-8">
-
       {/* Total Revenue */}
       <div className="bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 rounded-lg p-6 mb-10">
         <h2 className="text-xl font-bold mb-2">Total Revenue</h2>
-        <p className="text-3xl font-bold text-blue-600">
-          ${totalRevenue}
-        </p>
+        <p className="text-3xl font-bold text-blue-600">${totalRevenue}</p>
       </div>
 
       {/* Events List */}
@@ -59,7 +56,7 @@ export function DashboardOverviewPage() {
           <p className="text-gray-500">No events created yet.</p>
         ) : (
           <div className="space-y-4">
-            {events.map(event => {
+            {events.map((event) => {
               const sold = event.totalSeats - event.availableSeats;
               const revenue = sold * event.price;
 
@@ -69,9 +66,7 @@ export function DashboardOverviewPage() {
                   className="border border-gray-200 dark:border-gray-800 rounded-lg p-4 flex justify-between items-center"
                 >
                   <div>
-                    <h3 className="text-lg font-semibold">
-                      {event.title}
-                    </h3>
+                    <h3 className="text-lg font-semibold">{event.title}</h3>
                     <p className="text-sm text-gray-500">
                       {sold} tickets sold • Revenue: ${revenue}
                     </p>
@@ -85,12 +80,12 @@ export function DashboardOverviewPage() {
                       Edit
                     </Link>
 
-                    <button
-                      onClick={() => handleDelete(event.id)}
+                    <Link
+                      to={`/events/delete/${id}/${event.id}`}
                       className="px-4 py-2 bg-red-600 text-white rounded-lg text-sm"
                     >
                       Delete
-                    </button>
+                    </Link>
                   </div>
                 </div>
               );

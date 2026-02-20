@@ -13,14 +13,16 @@ import {
 import { useAuth } from "../lib/auth-context";
 import api from "../lib/api";
 import { Event } from "../lib/auth-context";
-
+import { Loading } from "../loading";
+import { useNavigate } from "react-router";
+import { toast } from "../lib/toast";
 export function EventDetailsPage() {
   const { id } = useParams();
   const { user } = useAuth();
   const [showBookingModal, setShowBookingModal] = useState(false);
   const [event, setEvent] = useState<Event>();
   const [booked_tickets, setBookedTickets] = useState<number>(0);
-
+  const [loading, setLoading] = useState<boolean>(true);
   const [hasBooked, setHasBooked] = useState(false);
 
   useEffect(() => {
@@ -40,7 +42,10 @@ export function EventDetailsPage() {
         const event = await api.get(`/events/${id}`);
         setEvent(event.data);
       } catch (err) {
+        toast.error("ERROR: Could not Get Event Details");
         throw err;
+      } finally {
+        setLoading(false);
       }
     }
     get_event();
@@ -48,17 +53,23 @@ export function EventDetailsPage() {
 
   if (!event) {
     return (
-      <div className="max-w-screen-2xl mx-auto px-6 py-16 text-center">
-        <h1 className="text-3xl font-bold text-gray-900 dark:text-white mb-4">
-          Event Not Found
-        </h1>
-        <Link
-          to="/events"
-          className="text-blue-600 dark:text-blue-400 hover:underline"
-        >
-          Back to Events
-        </Link>
-      </div>
+      <>
+        {loading ? (
+          <Loading />
+        ) : (
+          <div className="max-w-screen-2xl mx-auto px-6 py-16 text-center">
+            <h1 className="text-3xl font-bold text-gray-900 dark:text-white mb-4">
+              Event Not Found
+            </h1>
+            <Link
+              to="/events"
+              className="text-blue-600 dark:text-blue-400 hover:underline"
+            >
+              Back to Events
+            </Link>
+          </div>
+        )}
+      </>
     );
   }
 
@@ -329,7 +340,7 @@ function BookingModal({
   const [quantity, setQuantity] = useState<string | number>(1);
   const [showSuccess, setShowSuccess] = useState(false);
   const [showWarning, setShowWarning] = useState(false);
-
+  const navigate = useNavigate();
   const handleBook = async () => {
     // In real app, this would call an API
 
@@ -342,10 +353,10 @@ function BookingModal({
         setShowSuccess(false);
       } else {
         setShowSuccess(true);
-        setTimeout(() => {
-          onBook(parseInt(quantity as any));
-          onClose();
-        }, 2000);
+        toast.success("Booked Successfully");
+        onBook(parseInt(quantity as any));
+        onClose();
+        navigate("/profile/bookings");
       }
     } catch (err) {
       setShowSuccess(false);
@@ -423,7 +434,9 @@ function BookingModal({
                   Total
                 </span>
                 <span className="text-2xl font-bold text-blue-600 dark:text-blue-400">
-                  {event.price === 0 ? "Free" : `$${event.price * (quantity as any)}`}
+                  {event.price === 0
+                    ? "Free"
+                    : `$${event.price * (quantity as any)}`}
                 </span>
               </div>
             </div>
@@ -435,7 +448,6 @@ function BookingModal({
               >
                 Cancel
               </button>
-              
 
               <button
                 onClick={() => {
@@ -456,18 +468,14 @@ function BookingModal({
             </div>
 
             {showWarning && (
-                <>
+              <>
                 <br />
                 <div className="mb-4 rounded-lg bg-red-600 border border-red-200 px-4 py-3">
                   <p className="text-sm text font-bold ">
                     You can only book tickets for an event once.
-                    <span className="font-bold " >
-                      {" "}
-                      Confirm before booking.
-                    </span>
+                    <span className="font-bold "> Confirm before booking.</span>
                   </p>
                 </div>
-              
               </>
             )}
           </>

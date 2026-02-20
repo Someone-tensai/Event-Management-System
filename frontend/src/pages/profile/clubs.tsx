@@ -1,6 +1,6 @@
-import { Link } from 'react-router';
-import { Users, Shield, ExternalLink } from 'lucide-react';
-import { useAuth } from '../../lib/auth-context';
+import { Link } from "react-router";
+import { Users, Shield, ExternalLink } from "lucide-react";
+import { useAuth } from "../../lib/auth-context";
 
 export function MyClubsPage() {
   const { user } = useAuth();
@@ -17,15 +17,20 @@ export function MyClubsPage() {
         <div className="bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 rounded-lg p-6">
           <div className="flex items-center gap-2 mb-6">
             <Shield className="size-5 text-blue-600" />
-            <h2 className="text-2xl font-bold text-gray-900 dark:text-white">Admin Clubs</h2>
+            <h2 className="text-2xl font-bold text-gray-900 dark:text-white">
+              Admin Clubs
+            </h2>
           </div>
-          
+
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             {adminClubs.map((club) => (
-              <div key={club.club_id} className="group border border-gray-200 dark:border-gray-800 rounded-lg overflow-hidden hover:shadow-lg transition-shadow">
+              <div
+                key={club.club_id}
+                className="group border border-gray-200 dark:border-gray-800 rounded-lg overflow-hidden hover:shadow-lg transition-shadow"
+              >
                 <div className="relative h-24 bg-blue-600 dark:bg-blue-800">
-                  <img 
-                    src={club.cover_image} 
+                  <img
+                    src={club.cover_image}
                     alt={club.club_name}
                     className="w-full h-full object-cover opacity-50"
                   />
@@ -36,7 +41,9 @@ export function MyClubsPage() {
                   />
                 </div>
                 <div className="pt-10 pb-4 px-4">
-                  <h3 className="font-bold text-gray-900 dark:text-white mb-1">{club.club_name}</h3>
+                  <h3 className="font-bold text-gray-900 dark:text-white mb-1">
+                    {club.club_name}
+                  </h3>
                   <div className="flex items-center gap-1 text-sm text-gray-600 dark:text-gray-400 mb-3">
                     <Users className="size-4" />
                     <span>{club.members} members</span>
@@ -66,14 +73,20 @@ export function MyClubsPage() {
       <div className="bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 rounded-lg p-6">
         <div className="flex items-center gap-2 mb-6">
           <Users className="size-5 text-blue-600" />
-          <h2 className="text-2xl font-bold text-gray-900 dark:text-white">My Clubs</h2>
+          <h2 className="text-2xl font-bold text-gray-900 dark:text-white">
+            My Clubs
+          </h2>
         </div>
 
         {myClubs.length === 0 ? (
           <div className="text-center py-12">
             <Users className="size-12 text-gray-400 mx-auto mb-3" />
-            <h3 className="text-lg font-medium text-gray-900 dark:text-white mb-2">No clubs joined yet</h3>
-            <p className="text-gray-600 dark:text-gray-400 mb-4">Explore clubs and join your interests!</p>
+            <h3 className="text-lg font-medium text-gray-900 dark:text-white mb-2">
+              No clubs joined yet
+            </h3>
+            <p className="text-gray-600 dark:text-gray-400 mb-4">
+              Explore clubs and join your interests!
+            </p>
             <Link
               to="/clubs"
               className="inline-flex px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
@@ -84,10 +97,13 @@ export function MyClubsPage() {
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             {myClubs.map((club) => (
-              <div key={club.club_id} className="group border border-gray-200 dark:border-gray-800 rounded-lg overflow-hidden hover:shadow-lg transition-shadow">
+              <div
+                key={club.club_id}
+                className="group border border-gray-200 dark:border-gray-800 rounded-lg overflow-hidden hover:shadow-lg transition-shadow"
+              >
                 <div className="relative h-24 bg-blue-600 dark:bg-blue-800">
-                  <img 
-                    src={club.cover_image} 
+                  <img
+                    src={club.cover_image}
                     alt={club.club_name}
                     className="w-full h-full object-cover opacity-50"
                   />
@@ -103,7 +119,9 @@ export function MyClubsPage() {
                   )}
                 </div>
                 <div className="pt-10 pb-4 px-4">
-                  <h3 className="font-bold text-gray-900 dark:text-white mb-1">{club.club_name}</h3>
+                  <h3 className="font-bold text-gray-900 dark:text-white mb-1">
+                    {club.club_name}
+                  </h3>
                   <div className="flex items-center gap-1 text-sm text-gray-600 dark:text-gray-400 mb-3">
                     <Users className="size-4" />
                     <span>{club.members} members</span>
@@ -124,7 +142,9 @@ export function MyClubsPage() {
 
       {/* Pending Invitations */}
       <div className="bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 rounded-lg p-6">
-        <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-4">Pending Invitations</h2>
+        <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-4">
+          Pending Invitations
+        </h2>
         <div className="text-center py-8 text-gray-500 dark:text-gray-500">
           No pending invitations
         </div>

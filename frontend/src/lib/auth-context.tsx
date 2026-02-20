@@ -1,15 +1,17 @@
 import React, { createContext, useContext, useEffect, useState } from "react";
 import api from "./api";
+import { toast } from "./toast";
 
 export interface Club {
-  club_id: string,
-  club_name: string,
-  creator_id: number,
-  invite_only: boolean,
-  description: string,
-  cover_image: string,
-  logo: string,
-  members: number
+  club_id: string;
+  club_name: string;
+  creator_id: number;
+  invite_only: boolean;
+  description: string;
+  cover_image: string;
+  logo: string;
+  members: number;
+  events: Event[];
 }
 export interface Event {
   id: string;
@@ -18,9 +20,10 @@ export interface Event {
   date: string;
   time: string;
   venue: string;
-  type: 'physical' | 'online' | 'hybrid';
-  category: 'academic'| 'sports' | 'cultural'
+  type: "physical" | "online" | "hybrid";
+  category: "academic" | "sports" | "cultural";
   image: string;
+  qr_code: string;
   price: number;
   totalSeats: number;
   availableSeats: number;
@@ -36,9 +39,10 @@ export interface Booking {
   event_date: string;
   venue: string;
   tickets: number;
-  status: 'pending' | 'confirmed' | 'cancelled';
+  status: "pending" | "confirmed" | "cancelled";
   paymentProof?: string;
   qrCode?: string;
+  price: number;
 }
 
 export interface User {
@@ -52,7 +56,7 @@ export interface User {
 
 interface AuthContextType {
   user: User | null;
-  login: (email: string, password: string) => Promise<void>;
+  login: (username: string, password: string) => Promise<void>;
   logout: () => Promise<void>;
   register: (name: string, email: string, password: string) => Promise<void>;
   refreshUser: () => Promise<void>;
@@ -66,13 +70,13 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [user, setUser] = useState<User | null>(null);
 
   const refreshUser = async () => {
-  try {
-    const res = await api.get("/users/me");
-    setUser(res.data);
-  } catch {
-    setUser(null);
-  }
-};
+    try {
+      const res = await api.get("/users/me");
+      setUser(res.data);
+    } catch {
+      setUser(null);
+    }
+  };
 
   useEffect(() => {
     const fetchUser = async () => {
@@ -87,40 +91,38 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     fetchUser();
   }, []);
 
-  useEffect(()=>{
+  useEffect(() => {
     console.log(user);
-  },[user])
+  }, [user]);
   const login = async (username: string, password: string) => {
-    await api.post(
-      "/users/login",
-      { username, password },
-    );
-
-    const res = await api.get("/users/me", {
-    });
+    try {
+      await api.post("/users/login", { username, password });
+      toast.success("Logged in Successfully");
+    } catch (err) {
+      toast.error("Login Failed " + err.response.data.error_code);
+    }
+    const res = await api.get("/users/me", {});
 
     setUser(res.data);
   };
 
   const logout = async () => {
-    await api.get(
-      "/users/logout"
-    );
+    await api.get("/users/logout");
 
     setUser(null);
   };
 
   const register = async (name: string, email: string, password: string) => {
-    await api.post(
-      "/users/register",
-      { name, email, password },
-    );
-
-    const res = await api.get("/users/me", {
-      withCredentials: true,
-    });
-
-    setUser(res.data);
+    try {
+      const res = await api.post("/users/register", { name, email, password });
+      toast.success("Registered Successfully");
+    } catch (err) {
+      if(!err.response) {
+        toast.error("Server Unreachable");
+      }
+      else toast.error("Registration Failed " + err.response.data.error_code);
+      throw err;
+    }
   };
 
   const isClubMember = (user?.clubs?.length || 0) > 0;
@@ -128,12 +130,20 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const isClubAdmin = (clubId?: string) => {
     if (!user) return false;
     if (!clubId) return user.adminClubs.length > 0;
-    return user.adminClubs.some(c => c.club_id === clubId);
+    return user.adminClubs.some((c) => c.club_id === clubId);
   };
 
   return (
     <AuthContext.Provider
-      value={{ user, login, logout, register, isClubMember, isClubAdmin , refreshUser}}
+      value={{
+        user,
+        login,
+        logout,
+        register,
+        isClubMember,
+        isClubAdmin,
+        refreshUser,
+      }}
     >
       {children}
     </AuthContext.Provider>

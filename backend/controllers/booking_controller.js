@@ -5,6 +5,8 @@ const {
   query_add_new_booking,
   query_get_all_user_bookings,
 } = require("../db/booking_queries");
+
+const { query_update_available_seats } = require("../db/event_queries");
 const { query_event_with_id } = require("../db/event_queries");
 async function get_all_bookings(req, res) {
   const bookings = await query_all_bookings();
@@ -22,17 +24,17 @@ async function get_bookings_for_user(req, res) {
   const bookings = await query_get_all_user_bookings(user_id);
 
   const formatted = bookings.map((booking) => {
-    const dateObj = new Date(booking.date_time);
     return {
       id: booking.booking_id,
       event_id: booking.event_id,
       event_name: booking.title,
-      event_date: dateObj.toISOString().split("T")[0],
+      event_date: booking.event_date.toISOString().split("T")[0],
       venue: booking.venue,
       tickets: booking.tickets_booked,
       status: booking.status,
+      price: booking.price,
       paymentProof: "",
-      qrCode: "",
+      qrCode: booking.qr_code,
     };
   });
   res.json(formatted);
@@ -42,7 +44,6 @@ async function get_booking_of_user_for_event(req, res) {
   const { event_id } = req.query;
   const booking = await query_get_user_booking_for_event(user_id, event_id);
   const event = await query_event_with_id(event_id);
-  const dateObj = new Date(event.date_time);
 
   if (!booking) {
     res.json({});
@@ -52,7 +53,7 @@ async function get_booking_of_user_for_event(req, res) {
     id: booking.booking_id,
     event_id: event.event_id,
     event_name: event.title,
-    event_date: dateObj.toISOString().split("T")[0],
+    event_date: event.event_date,
     venue: event.venue,
     tickets: booking.tickets_booked,
     status: booking.status,
@@ -65,7 +66,8 @@ async function add_new_booking(req, res) {
   try {
     const user_id = req.user.user_id;
     const { event_id, tickets_booked } = req.body;
-    let booking_array = [user_id, event_id, tickets_booked, "Pending"];
+    let booking_array = [user_id, event_id, tickets_booked, "pending"];
+    await query_update_available_seats(event_id, tickets_booked);
     await query_add_new_booking(booking_array);
     res.status(200).json("Message: Booking Added");
   } catch (err) {

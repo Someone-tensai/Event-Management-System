@@ -1,19 +1,20 @@
-import { useState } from 'react';
-import { Link, useNavigate } from 'react-router';
-import { useAuth } from '../lib/auth-context';
-import { Calendar } from 'lucide-react';
-
+import { useState } from "react";
+import { Link, useNavigate } from "react-router";
+import { useAuth } from "../lib/auth-context";
+import { Calendar } from "lucide-react";
 export function RegisterPage() {
-  const [name, setName] = useState('');
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
+  const [name, setName] = useState("");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
   const { register } = useAuth();
   const navigate = useNavigate();
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    register(name, email, password);
-    navigate('/');
+    try {
+      await register(name, email, password);
+      navigate("/login");
+    } catch (err) {}
   };
 
   return (
@@ -23,14 +24,21 @@ export function RegisterPage() {
           <div className="flex justify-center mb-4">
             <Calendar className="size-12 text-blue-600 dark:text-blue-500" />
           </div>
-          <h1 className="text-3xl font-bold text-gray-900 dark:text-white mb-2">Create Account</h1>
-          <p className="text-gray-600 dark:text-gray-400">Join CampusEvents today</p>
+          <h1 className="text-3xl font-bold text-gray-900 dark:text-white mb-2">
+            Create Account
+          </h1>
+          <p className="text-gray-600 dark:text-gray-400">
+            Join CampusEvents today
+          </p>
         </div>
 
         <div className="bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 rounded-xl p-8">
           <form onSubmit={handleSubmit} className="space-y-6">
             <div>
-              <label htmlFor="name" className="block text-sm font-medium text-gray-900 dark:text-white mb-2">
+              <label
+                htmlFor="name"
+                className="block text-sm font-medium text-gray-900 dark:text-white mb-2"
+              >
                 User Name
               </label>
               <input
@@ -45,7 +53,10 @@ export function RegisterPage() {
             </div>
 
             <div>
-              <label htmlFor="email" className="block text-sm font-medium text-gray-900 dark:text-white mb-2">
+              <label
+                htmlFor="email"
+                className="block text-sm font-medium text-gray-900 dark:text-white mb-2"
+              >
                 Email Address
               </label>
               <input
@@ -60,7 +71,10 @@ export function RegisterPage() {
             </div>
 
             <div>
-              <label htmlFor="password" className="block text-sm font-medium text-gray-900 dark:text-white mb-2">
+              <label
+                htmlFor="password"
+                className="block text-sm font-medium text-gray-900 dark:text-white mb-2"
+              >
                 Password
               </label>
               <input
@@ -84,8 +98,11 @@ export function RegisterPage() {
 
           <div className="mt-6 text-center">
             <p className="text-sm text-gray-600 dark:text-gray-400">
-              Already have an account?{' '}
-              <Link to="/login" className="text-blue-600 dark:text-blue-400 hover:underline">
+              Already have an account?{" "}
+              <Link
+                to="/login"
+                className="text-blue-600 dark:text-blue-400 hover:underline"
+              >
                 Login here
               </Link>
             </p>

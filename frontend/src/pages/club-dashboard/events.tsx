@@ -23,7 +23,6 @@ export function DashboardEventsPage() {
 
   // Mock different event states
 
-
   return (
     <>
       <div className="bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 rounded-lg overflow-hidden">
