@@ -98,12 +98,15 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     try {
       await api.post("/users/login", { username, password });
       toast.success("Logged in Successfully");
+      
+
     } catch (err) {
       toast.error("Login Failed " + err.response.data.error_code);
     }
-    const res = await api.get("/users/me", {});
-
+    finally{
+    const res = await api.get("/users/me");
     setUser(res.data);
+    }
   };
 
   const logout = async () => {
