@@ -72,8 +72,8 @@ async function login_user(req, res, next) {
       // Send a cookie with the token and flags
       res.cookie("token", token, {
         httpOnly: true,
-        sameSite: "lax",
-        secure: false,
+        sameSite: "none",
+        secure: true,
         maxAge: 86400000,
       });
       res.status(200).json({
@@ -98,8 +98,8 @@ function logout_user(req, res) {
   // Make sure the previous cookie is Invalid (TODO)
   res.clearCookie("token", {
     httpOnly: true,
-    sameSite: "lax",
-    secure: false,
+    sameSite: "none",
+    secure: true,
   });
 
   res.json({ message: "Logged Out" });

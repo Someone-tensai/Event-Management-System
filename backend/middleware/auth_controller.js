@@ -7,7 +7,6 @@ const {
   query_number_of_people,
 } = require("../db/club_queries");
 const { pool } = require("../db/pool");
-const { user } = require("pg/lib/defaults");
 // Checks if User is Logged in
 async function is_logged_in(req, res, next) {
   const token = req.cookies.token;
