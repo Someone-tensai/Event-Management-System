@@ -13,7 +13,7 @@ const app = express();
 dotenv.config();
 app.use(
   cors({
-    origin: "event-management-system-git-main-someone-tensais-projects.vercel.app",
+    origin: "event-management-system-mu-liart.vercel.app",
     credentials: true,
   }),
 );
