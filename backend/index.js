@@ -13,7 +13,7 @@ const app = express();
 dotenv.config();
 app.use(
   cors({
-    origin: "event-management-system-mu-liart.vercel.app",
+    origin: "https://event-management-system-mu-liart.vercel.app",
     credentials: true,
   }),
 );
