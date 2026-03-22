@@ -13,7 +13,7 @@ const app = express();
 dotenv.config();
 app.use(
   cors({
-    origin: "https://event-management-system-dkri.onrender.com",
+    origin: "https://event-management-system-mu-liart.vercel.app",
     credentials: true,
   }),
 );
