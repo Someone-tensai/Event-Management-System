@@ -3,6 +3,8 @@ vscode/
 *.env
 *.md
 node_modules/
+migrations/
+database/
 # Logs
 logs
 *.log
